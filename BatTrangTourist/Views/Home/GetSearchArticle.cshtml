@@ -1,0 +1,27 @@
+﻿@model BatTrangTourist.ViewModel.ArticleSearchViewModel
+@using PagedList.Mvc
+
+<div class="row">
+    @if (Model.Articles.Any())
+    {
+        foreach (var item in Model.Articles)
+        {
+            <div class="col-lg-4 col-md-4">
+                @Html.Partial("_ArticleItem", item)
+            </div>
+        }
+        if (Model.Articles.PageCount > 1)
+        {
+            <div class="col-12 text-center">
+                @Html.PagedListPager(Model.Articles, page => Url.Action("SearchArticle", new { page, sort = Model.Sort, keywords = Model.Keywords }))
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <h3 class="font-weight-bold text-danger text-uppercase">Không có kết quả</h3>
+            <p>Xin lỗi, không có nội dung phù hợp với cụm từ tìm kiếm của bạn. Vui lòng thử lại với một số từ khóa khác.</p>
+        </div>
+    }
+</div>

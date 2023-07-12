@@ -1,0 +1,43 @@
+﻿@model BatTrangTourist.ViewModel.PhotoLibraryViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Thư viện ảnh";
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("PhotoLibrary");
+    ViewBag.Robots = "noindex";
+}
+
+<section class="albums">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+            <li class="breadcrumb-item">Thư viện ảnh</li>
+        </ul>
+        @if (Model.PhotoLibraries.Any())
+        {
+            <div class="row my-4">
+                @foreach (var item in Model.PhotoLibraries)
+                {
+                    <div class="col-lg-3 col-md-4 col-6 mb-lg-3 mb-2">
+                        <a href="@Url.Action("AlbumDetail", new { url = item.Url })" class="album-item">
+                            @if (item.ListImage != null)
+                            {
+                                <img data-src="@Path.Combine("/images/photoLibraries/", item.ListImage.Split(',')[0])" src="~/Content/images/img-main/base64.gif" alt="@item.AlbumName" class="lazyload" />
+                            }
+                            <div class="album-name">@item.AlbumName</div>
+                        </a>
+                    </div>
+                }
+            </div>
+            if (Model.PhotoLibraries.PageCount > 1)
+            {
+                <div class="text-center">
+                    @Html.PagedListPager(Model.PhotoLibraries, page => Url.Action("PhotoLibrary", new { page }))
+                </div>
+            }
+        }
+        else
+        {
+            <p class="alert alert-success small">Nội dung hiện chưa được cập nhật. Vui lòng quay lại sau !!!!</p>
+        }
+    </div>
+</section>

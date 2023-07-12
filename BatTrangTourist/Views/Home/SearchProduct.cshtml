@@ -1,0 +1,99 @@
+﻿@model BatTrangTourist.ViewModel.SearchProductViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Tìm kiếm " + Model.Keywords;
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("SearchProduct", "Home");
+    ViewBag.Robots = "noindex";
+}
+
+<section class="bg-header">
+    <div class="container">
+        <div class="box-content">
+            <div class="category-name">Tour du lịch trải nghiệm</div>
+            <div class="desc">Từ khóa: @Model.Keywords</div>
+            <a href="@Url.Action("Contact")" class="btn-booking">
+                Liên hệ Đặt Tour
+            </a>
+        </div>
+    </div>
+</section>
+<section class="container">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Từ khóa: @Model.Keywords</li>
+    </ul>
+    <div class="row">
+        <div class="col-lg-3 order-lg-0 order-1">
+            <div class="box-filter">
+                <div class="title">Lọc kết quả</div>
+                <div class="label-search">Từ khóa</div>
+                <form action="@Url.Action("SearchProduct")" class="filter-form">
+                    <input type="text" name="keywords" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." required />
+                    <button><i class="fa-light fa-magnifying-glass"></i></button>
+                </form>
+                @if (Model.Categories.Any())
+                {
+                    <div class="title-filter">Loại tour</div>
+                    foreach (var item in Model.Categories)
+                    {
+                        <label class="filter-label">
+                            @item.CategoryName
+                            <input data-filter="" type="radio" name="catId" value="@item.Id" @if (Model.CatId == item.Id) { @Html.Raw("checked='checked'") } />
+                            <span class="checkmark"></span>
+                        </label>
+                    }
+                }
+                <div class="title-filter">Theo giá</div>
+                <select class="form-control filter-price">
+                    <option value="">Tất cả</option>
+                    <option value="1" @if (Model.Price == 1) { @Html.Raw("selected='selected'") }>Dưới 1 triệu</option>
+                    <option value="2" @if (Model.Price == 2) { @Html.Raw("selected='selected'") }>Từ 1 triệu - 2 triệu</option>
+                    <option value="3" @if (Model.Price == 3) { @Html.Raw("selected='selected'") }>Từ 2 triệu - 3 triệu</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-9 order-lg-1 order-0">
+            <input type="hidden" name="currentUrl" value="@Url.Action("SearchProduct")" />
+            <input type="hidden" name="keywords" value="@Model.Keywords" />
+            <h2 class="title-cat">Tour du lịch trải nghiệm</h2>
+            <hr />
+            <div id="list-item-sort">
+                @if (Model.Count > 0)
+                {
+                    <div class="sub-text">
+                        Chúng tôi tìm thấy <b>@Model.Count tours</b> cho Quý khách.
+                    </div>
+                }
+                <div class="row">
+                    @if (Model.Products.Any())
+                    {
+                        foreach (var item in Model.Products)
+                        {
+                            <div class="col-lg-4 col-md-6">
+                                @Html.Partial("_ProductItem", item)
+                            </div>
+                        }
+                        if (Model.Products.PageCount > 1)
+                        {
+                            <div class="col-12 text-center">
+                                @Html.PagedListPager(Model.Products, page => Url.Action("SearchProduct", new { page, keywords = Model.Keywords, price = Model.Price, catId = Model.CatId }))
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <p class="alert alert-success small">Nội dung hiện chưa được cập nhật. Vui lòng quay lại sau !!!!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts{
+    <script>
+        Sort("/Home/GetSearchProduct");
+    </script>
+}

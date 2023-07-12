@@ -1,0 +1,59 @@
+﻿@model BatTrangTourist.Models.Feedback
+@{
+    ViewBag.Title = "Thêm phản hồi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .form_name {
+        width: 100px;
+    }
+</style>
+<a class="btn quick-link" href="@Url.Action("ListFeedback","Contact")"><i class="far fa-list mr-1"></i> Danh sách phản hồi</a>
+<div class="box_content">
+    @using (Html.BeginForm("Feedback", "Contact", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.ValidationSummary(true)
+        <table class="form_table">
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Name)</td>
+                <td class="form_text">@Html.EditorFor(model => model.Name)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Classify)</td>
+                <td class="form_text">@Html.EditorFor(model => model.Classify)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Image)</td>
+                <td class="form_text">
+                    @Html.TextBoxFor(model => model.Image, new { type = "file" })<span class="red-warring">Chấp nhận ảnh jpg, png, gif, jpeg < 4MB</span>
+                </td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.TourName)</td>
+                <td class="form_text">@Html.EditorFor(model => model.TourName)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Content)</td>
+                <td class="form_text">@Html.EditorFor(model => model.Content)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Star)</td>
+                <td class="form_text">@Html.EditorFor(model => model.Star)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Sort)</td>
+                <td class="form_text">@Html.EditorFor(model => model.Sort)</td>
+            </tr>
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.Active)</td>
+                <td class="form_text">@Html.CheckBoxFor(model => model.Active, new { @checked = "checked" })</td>
+            </tr>
+            <tr>
+                <td class="form_name"></td>
+                <td class="form_text">
+                    <input type="submit" class="btn quick-link" value="Thêm mới" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>

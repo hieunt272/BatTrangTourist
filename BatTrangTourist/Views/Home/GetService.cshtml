@@ -1,0 +1,172 @@
+﻿@model BatTrangTourist.ViewModel.ProductDetailViewModel
+
+<div class="package-content">
+    <div class="package-title">Số lượng</div>
+    @if (Model.FirstService.AdultPrice != null)
+    {
+        <div class="package-detail">
+            <div class="counter-left">Người lớn</div>
+            <div class="counter-right">
+                <div class="counter-price">@Convert.ToInt32(Model.FirstService.AdultPrice).ToString("N0") ₫</div>
+                <div class="quantity">
+                    <input type="text" value="0" min="0" id="number" name="AdultQuantity" class="nice-number input-number" maxlength="4" readonly />
+                </div>
+            </div>
+            <input type="hidden" class="price-hidden" value="@Convert.ToInt32(Model.FirstService.AdultPrice)" />
+            <input type="hidden" class="total-item" value="0" />
+        </div>
+    }
+    @if (Model.FirstService.ChildPrice != null)
+    {
+        <div class="package-detail">
+            <div class="counter-left">Trẻ em (5-9T)</div>
+            <div class="counter-right">
+                <div class="counter-price">@Convert.ToInt32(Model.FirstService.ChildPrice).ToString("N0") ₫</div>
+                <div class="quantity">
+                    <input type="text" value="0" min="0" id="number" name="ChildQuantity" class="nice-number input-number" maxlength="4" readonly />
+                </div>
+            </div>
+            <input type="hidden" class="price-hidden" value="@Convert.ToInt32(Model.FirstService.ChildPrice)" />
+            <input type="hidden" class="total-item" value="0" />
+        </div>
+    }
+</div>
+<div class="options-group">
+    <div class="package-title">Thanh toán</div>
+    <div class="package-btnGroup">
+        <div class="price-detail">
+            <span class="price">- ₫</span>
+            <div class="price-poptip">
+                Chi tiết <i class="fa-light fa-angle-up"></i>
+                <div class="poptip-popper">
+                    <div class="detail-box-title">Chi tiết thanh toán</div>
+                    <div class="detail-box-field">
+                        <div class="sub-title">@Model.FirstService.Name</div>
+                        @*<div class="line-box">
+                                <span class="text">Người lớn</span>
+                                <span class="value">
+                                    614.706 ₫ <span class="count">x 1</span>
+                                </span>
+                            </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button type="submit" class="btn-book">Đặt ngay</button>
+    </div>
+</div>
+<div class="details-content">
+    <div class="box-title">
+        <span class="title">Chi tiết gói dịch vụ</span>
+        @*<button type="button" class="expand-icon">
+                <i class="fa-regular fa-arrow-up-right-and-arrow-down-left-from-center"></i>
+            </button>*@
+    </div>
+    <div class="overflow-hidden">
+        <div class="content-scroll">
+            @if (Model.FirstService.Tags.Any())
+            {
+                <div class="tagging-wrap">
+                    @foreach (var item in Model.FirstService.Tags)
+                    {
+                        <div class="tag-item">@item.Name</div>
+                    }
+                </div>
+            }
+            <div class="accordion" id="service-detail">
+                @if (Model.FirstService.Schedule != null)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#schedule" aria-expanded="true">
+                                Lịch trình <i class="fa-light fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="schedule" class="collapse show">
+                            <div class="card-body service-content">
+                                @Html.Raw(Model.FirstService.Schedule)
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.FirstService.Include != null)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#include" aria-expanded="true">
+                                Bao gồm <i class="fa-light fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="include" class="collapse show">
+                            <div class="card-body service-content">
+                                @Html.Raw(Model.FirstService.Include)
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.FirstService.Note != null)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#note" aria-expanded="true">
+                                Lưu ý trước khi đặt <i class="fa-light fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="note" class="collapse show">
+                            <div class="card-body service-content">
+                                @Html.Raw(Model.FirstService.Note)
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.FirstService.Terms != null)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#terms" aria-expanded="true">
+                                Điều khoản chung <i class="fa-light fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="terms" class="collapse show">
+                            <div class="card-body service-content">
+                                @Html.Raw(Model.FirstService.Terms)
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (Model.FirstService.Manual != null)
+                {
+                    <div class="card">
+                        <div class="card-header">
+                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#manual" aria-expanded="true">
+                                Hướng dẫn sử dụng <i class="fa-light fa-angle-down"></i>
+                            </a>
+                        </div>
+                        <div id="manual" class="collapse show">
+                            <div class="card-body service-content">
+                                @Html.Raw(Model.FirstService.Manual)
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $(".nice-number").niceNumber();
+
+    $(".quantity .btn-light").click(function () {
+        var quantity = $(this).siblings(".input-number").val();
+        var price = $(this).parents(".package-detail").find(".price-hidden").val();
+        var itemPrice = quantity * price;
+        $(this).parents(".package-detail").find(".total-item").val(itemPrice);
+
+        var items = $(".total-item");
+        var totalCart = 0;
+        items.each(function () {
+            totalCart += parseInt(this.value);
+        });
+        $(".price-detail .price").text(totalCart.toLocaleString('it-IT') + " ₫");
+    });
+</script>

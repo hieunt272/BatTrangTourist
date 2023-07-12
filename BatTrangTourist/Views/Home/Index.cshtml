@@ -1,0 +1,335 @@
+﻿@model BatTrangTourist.ViewModel.HomeViewModel
+@using BatTrangTourist.Models
+@using Helpers
+@{
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+    ViewBag.Title = config.Title;
+    ViewBag.Description = config.Description;
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("Index", "Home");
+    var fb = Model.Banners.FirstOrDefault(a => a.GroupId == 1);
+    if (fb != null)
+    {
+        ViewBag.ImageShare = Request.Url?.GetLeftPart(UriPartial.Authority) + Path.Combine("/images/banners/", fb.Image);
+    }
+}
+@Styles.Render("~/Content/themes/base/css")
+
+@if (Model.Banners.Any(a => a.GroupId == 1))
+{
+    <section class="banner">
+        @foreach (var item in Model.Banners.Where(a => a.GroupId == 1))
+        {
+            <a href="@item.Url" class="banner-item">
+                @if (item.Image != null)
+                {
+                    <img src="@Path.Combine("/images/banners/", item.Image)" alt="@item.BannerName" />
+                }
+            </a>
+        }
+    </section>
+}
+<form action="@Url.Action("SearchProduct")" class="search-tour">
+    <div class="input-group">
+        <input type="text" name="keywords" class="form-control" placeholder="Bạn muốn đi đâu?" />
+        <i class="fa-light fa-location-dot icon"></i>
+    </div>
+    <div class="form-row mt-3">
+        <div class="col-6">
+            <div class="box-calendar">
+                <div class="input-group">
+                    <input type="text" class="form-control datepicker" />
+                    <i class="fa-light fa-calendar-star icon"></i>
+                </div>
+                <span class="day-number">
+                    <i class="fa-solid fa-moon"></i>
+                </span>
+                <div class="input-group">
+                    <input type="text" class="form-control datepicker" />
+                    <i class="fa-light fa-calendar-star icon"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-4">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="2 người lớn" />
+                <i class="fa-light fa-users icon"></i>
+            </div>
+        </div>
+        <div class="col-2">
+            <button type="submit">Tìm</button>
+        </div>
+    </div>
+</form>
+<section class="introduce">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                @if (config.VideoUrl != null)
+                {
+                    <div class="video">
+                        <div class="embed-responsive">
+                            <a href="@config.VideoUrl" data-fancybox="gallery">
+                                <div class="video-img">
+                                    <img data-src="@Path.Combine("/images/configs/", config.AboutImage)" src="~/Content/images/img-main/base64.gif" class="lazyload" alt="Video giới thiệu">
+                                </div>
+                                <div class="btn-play">
+                                    <i class="fa-solid fa-play"></i>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                }
+                else if (config.AboutImage != null)
+                {
+                    <div class="img-intro">
+                        <img data-src="@Path.Combine("/images/configs/", config.AboutImage)" src="~/Content/images/img-main/base64.gif" alt="Ảnh giới thiệu" class="lazyload" />
+                    </div>
+                }
+            </div>
+            <div class="col-lg-6">
+                <div class="sub-title">Giới thiệu về chúng tôi</div>
+                @if (config.AboutText != null)
+                {
+                    <div class="content">
+                        @Html.Raw(config.AboutText)
+                    </div>
+                }
+                @if (Model.Banners.Any(a => a.GroupId == 2))
+                {
+                    var count = Model.Banners.Count(a => a.GroupId == 2);
+                    <div class="numbers">
+                        @if (count > 1)
+                        {
+                            <span class="line-1"></span>
+                        }
+                        @if (count > 2)
+                        {
+                            <span class="line-2"></span>
+                        }
+                        @foreach (var item in Model.Banners.Where(a => a.GroupId == 2))
+                        {
+                            <div class="number-item">
+                                @if (item.Image != null)
+                                {
+                                    <img data-src="@Path.Combine("/images/banners/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.BannerName" class="icon lazyload" />
+                                }
+                                <div class="body">
+                                    <div class="number">
+                                        @item.Slogan
+                                    </div>
+                                    @item.BannerName
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>
+<section class="container">
+    @if (Model.Banners.Any(a => a.GroupId == 3))
+    {
+        <div class="offers">
+            <div class="title-section">ưu đãi hấp dẫn</div>
+            <div class="sub-title-section">Hãy tham gia cùng chúng tôi để nhận được ưu đãi hấp dẫn</div>
+            <div class="row mt-4">
+                @foreach (var item in Model.Banners.Where(a => a.GroupId == 3))
+                {
+                    <div class="col-4">
+                        <a href="@item.Url" class="offer-item">
+                            @if (item.Image != null)
+                            {
+                                <img data-src="@Path.Combine("/images/banners/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.BannerName" class="lazyload" />
+                            }
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.ProductHots.Any())
+    {
+        <div class="tours">
+            <div class="title-section">tour hot nhất trong tháng</div>
+            <div class="sub-title-section">Các tour được đặt nhiều nhất trong tháng này</div>
+            <div class="tour-list">
+                @foreach (var item in Model.ProductHots)
+                {
+                    @Html.Partial("_ProductItem", item)
+                }
+            </div>
+            <div class="text-center">
+                <a href="@Url.Action("AllProduct")" class="view-all">
+                    Xem tất cả <i class="fa-regular fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+    @if (Model.ProductFavorites.Any())
+    {
+        <div class="tours">
+            <div class="title-section">tour được yêu thích nhất</div>
+            <div class="sub-title-section">Khám phá ngay các tour, hoạt động du lịch và địa điểm tham quan cho hành trình du lịch của bạn</div>
+            <div class="tour-list">
+                @foreach (var item in Model.ProductFavorites)
+                {
+                    @Html.Partial("_ProductItem", item)
+                }
+            </div>
+            <div class="text-center">
+                <a href="@Url.Action("AllProduct")" class="view-all">
+                    Xem tất cả <i class="fa-regular fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+    @if (Model.Articles.Any())
+    {
+        <div class="blogs">
+            <div class="title-section">cẩm nang du lịch</div>
+            <div class="sub-title-section">Những kinh nghiệm thú vị về du lịch được chia sẻ ở đây</div>
+            <div class="row mt-4">
+                @foreach (var item in Model.Articles.Take(3))
+                {
+                    <div class="col-lg-4 col-md-4">
+                        <div class="blog-item">
+                            <a href="@Url.Action("ArticleDetail", new { url = item.Url })" class="blog-img">
+                                @if (item.Image != null)
+                                {
+                                    <img data-src="@Path.Combine("/images/articles/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Subject" class="lazyload" />
+                                }
+                            </a>
+                            <a href="@Url.Action("ArticleCategory", "Home", new { url = item.ArticleCategory.Url })" class="blog-cat">
+                                @item.ArticleCategory.CategoryName
+                            </a>
+                            <div class="subject">
+                                <a href="@Url.Action("ArticleDetail", new { url = item.Url })">@item.Subject</a>
+                            </div>
+                        </div>
+                    </div>
+                }
+                @foreach (var item in Model.Articles.Skip(3))
+                {
+                    <div class="col-lg-4 col-md-4">
+                        <div class="blog-horizonal">
+                            <a href="@Url.Action("ArticleDetail", new { url = item.Url })" class="blog-img">
+                                @if (item.Image != null)
+                                {
+                                    <img data-src="@Path.Combine("/images/articles/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Subject" class="lazyload" />
+                                }
+                            </a>
+                            <div class="body">
+                                <div class="subject">
+                                    <a href="@Url.Action("ArticleDetail", new { url = item.Url })">@item.Subject</a>
+                                </div>
+                                <div class="desc">
+                                    @item.Description
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <div class="text-center mt-2">
+                <a href="@Url.Action("AllArticle")" class="view-all">
+                    Xem tất cả <i class="fa-regular fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+</section>
+@if (Model.Feedbacks.Any())
+{
+    <section class="feedback">
+        <div class="container">
+            <div class="title-section">khách hàng nói về chúng tôi</div>
+            <div class="sub-title-section">Những phản hồi thực tế từ những khách hàng đã sử dụng dịch vụ của chúng tôi</div>
+            <div class="feedback-list">
+                @foreach (var item in Model.Feedbacks)
+                {
+                    <div class="feedback-item">
+                        <div class="tour-name">@item.TourName</div>
+                        <div class="content">
+                            @item.Content
+                        </div>
+                        <div class="media customer">
+                            @if (item.Image != null)
+                            {
+                                <img data-src="@Path.Combine("/images/feedbacks/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Name" class="avatar lazyload" />
+                            }
+                            <div class="media-body">
+                                <div class="name">@item.Name</div>
+                                <div class="vote-box">
+                                    <div class="meta-vote">
+                                        <div class="star-box">
+                                            <div class="star-gray">
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                            </div>
+                                            <div class="star-color" style="width: @(item.Star * 20)%">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="job">@item.Classify</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+<section class="container">
+    <div class="subcribe">
+        <div class="box-left">
+            <div class="title">Đừng bỏ lỡ</div>
+            <div class="sub-text">Nhập địa chỉ Email để đăng ký nhận tin mới nhất</div>
+            <form class="subcribe-form" id="subcribeForm">
+                @Html.AntiForgeryToken()
+                <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn..." required />
+                <button type="submit">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+    @if (config.ListImage != null)
+    {
+        var images = config.ListImage.Split(',');
+        <div class="photos">
+            <div class="title-section">thư viện ảnh</div>
+            <div class="sub-title-section">Hãy xem những hình ảnh đẹp nhất của chúng tôi tại đây</div>
+            <div class="photo-list">
+                @foreach (var image in images)
+                {
+                    <a href="@Path.Combine("/images/configs/", image)" data-fancybox="photo" class="photo-item">
+                        <img data-src="@Path.Combine("/images/configs/", image)" src="~/Content/images/img-main/base64.gif" alt="Thư viện ảnh" class="lazyload" />
+                    </a>
+                }
+            </div>
+            <div class="text-center">
+                <a href="@Url.Action("PhotoLibrary")" class="view-all">
+                    Xem tất cả <i class="fa-regular fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    }
+</section>
+
+@section scripts{
+    @Scripts.Render("~/bundles/jqueryval", "~/bundles/jqueryui")
+    <script>
+        homeJs();
+        $(".datepicker").datepicker({
+            dateFormat: "dd/mm/yy"
+        });
+    </script>
+}

@@ -1,0 +1,44 @@
+﻿@model BatTrangTourist.ViewModel.MenuArticleViewModel
+
+<div class="box-border p-3 shadow">
+    <form action="@Url.Action("SearchArticle")" class="form-search">
+        <input type="text" name="keywords" class="form-control" placeholder="Tìm kiếm" required />
+        <button type="submit">
+            <i class="far fa-search"></i>
+        </button>
+    </form>
+    @if (Model.Articles.Any())
+    {
+        <div class="recent-post">
+            <div class="post-sidebar-title">
+                Bài viết gần đây
+            </div>
+            @foreach (var article in Model.Articles)
+            {
+                <div class="media py-3">
+                    <div class="recent-post-img">
+                        <a href="@Url.Action("ArticleDetail", "Home", new { url = article.Url })" class="mr-3">
+                            @if (article.Image != null)
+                            {
+                                <img data-src="@Path.Combine("/images/articles/", article.Image)" src="~/Content/images/img-main/base64.gif" class="lazyload" alt="@article.Subject">
+                            }
+                            else
+                            {
+                                <img src="~/Content/images/img-main/on-image.jpg" alt="@article.Subject" />
+                            }
+                        </a>
+                    </div>
+                    <div class="media-body">
+                        <a href="@Url.Action("ArticleDetail", "Home", new { url = article.Url })" class="subject">
+                            @article.Subject
+                        </a>
+                        <span class="date">
+                            <i class="fal fa-calendar-alt"></i>
+                            @article.CreateDate.ToString("dd/MM/yyyy")
+                        </span>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>

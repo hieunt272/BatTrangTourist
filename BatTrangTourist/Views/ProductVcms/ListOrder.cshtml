@@ -1,0 +1,113 @@
+﻿@model PagedList.IPagedList<BatTrangTourist.Models.Order>
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Danh sách đơn đặt tour";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Danh sách đơn đặt tour</h2>
+<div class="box_content mt-4">
+    <div class="row">
+        <div class="col-3">
+            <label class="font-weight-bold">Trạng thái đơn hàng</label>
+            <select name="status" class="form_control w300" onchange="window.location.href='/ProductVcms/ListOrder?status='+this.value">
+                <option value="">Tất cả đơn hàng</option>
+                <option value="1" @if (ViewBag.Status == 1) { @Html.Raw("selected=selected") }>Đang xử lý</option>
+                <option value="2" @if (ViewBag.Status == 2) { @Html.Raw("selected=selected") }>Đã thanh toán</option>
+                <option value="3" @if (ViewBag.Status == 3) { @Html.Raw("selected=selected") }>Hủy đơn</option>
+            </select>
+        </div>
+    </div>
+
+    <p>Có tổng số <strong>@Model.TotalItemCount</strong> đơn hàng</p>
+    <table class="list_table">
+        <tr>
+            <th style="width: 40px">Mã ĐH</th>
+            <th style="width: 100px">Ngày</th>
+            <th>Tour</th>
+            <th>Ngày khởi hành</th>
+            <th>Thông tin dịch vụ</th>
+            <th>Thông tin khách hàng</th>
+            <th>Tổng tiền</th>
+            <th>Trạng thái</th>
+            <th style="width: 120px;"></th>
+        </tr>
+        @foreach (var order in Model)
+        {
+            <tr data-id="@order.Id">
+                <td>@order.OrderNumber</td>
+                <td>@order.CreateDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    @order.Service.Product.Name
+                </td>
+                <td>@order.TransportDate.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <p>Dịch vụ: @order.Service.Name</p>
+                    @if (order.AdultQuantity > 0)
+                    {
+                        <span>Người lớn x @order.AdultQuantity</span><br />
+                    }
+                    @if (order.ChildQuantity > 0)
+                    {
+                        <p>Trẻ em x @order.ChildQuantity</p>
+                    }
+                </td>
+                <td>
+                    <span>Họ tên: @order.CustomerInfo.Fullname</span><br />
+                    <span>Email: @order.CustomerInfo.Email</span><br />
+                    <span>Số điện thoại: @order.CustomerInfo.Mobile</span>
+                </td>
+                <td>@order.Total.ToString("N0") ₫</td>
+                <td>
+                    <select name="Status" onchange="updateOrder(@order.Id, this.value)">
+                        <option value="1" @if (order.Status == 1) { @Html.Raw("selected='selected'") }>Đang xử lý</option>
+                        <option value="2" @if (order.Status == 2) { @Html.Raw("selected='selected'") }>Đã thanh toán</option>
+                        <option value="3" @if (order.Status == 3) { @Html.Raw("selected='selected'") }>Hủy đơn</option>
+                    </select>
+                </td>
+                <td>
+                    @*<a href="javascript:;" onclick="loadOrder('@order.Id')">Xem đơn</a>*@
+                    <a href="javascript:;" onclick="deleteOrder('@order.Id')">Xóa</a>
+                </td>
+            </tr>
+        }
+        @if (Model.PageCount > 1)
+        {
+            <tr>
+                <td colspan="9">@Html.PagedListPager(Model, page => Url.Action("ListOrder", new { page }))</td>
+            </tr>
+        }
+    </table>
+</div>
+<div id="contactDetails"></div>
+@section scripts{
+    <script>
+        function loadOrder(id) {
+            $.get("/ProductVcms/LoadOrder", { orderId: id }, function (data) {
+                $("#contactDetails").html(data);
+                $("#contactDetails").dialog("open");
+            });
+        }
+        function updateOrder(id, status) {
+            $.post("/ProductVcms/UpdateOrder", { orderId: id, status }, function (data) {
+                if (data) {
+                    alert("Cập nhật đơn hàng thành công");
+                } else {
+                    alert("Quá trình thực hiện không thành công. Hãy thử lại");
+                }
+            });
+        }
+        function deleteOrder(id) {
+            if (confirm("Bạn có chắc chắn hủy đơn hàng này không?")) {
+                $.post("/ProductVcms/DeleteOrder", { orderId: id }, function (data) {
+                    if (data) {
+                        alert("Hủy đơn hàng thành công");
+                        $("tr[data-id='" + id + "']").fadeOut();
+                    } else {
+                        alert("Quá trình thực hiện không thành công. Hãy thử lại");
+                    }
+                });
+            }
+        }
+    </script>    
+}

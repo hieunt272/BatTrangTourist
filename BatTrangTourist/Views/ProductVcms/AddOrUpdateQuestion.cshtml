@@ -1,0 +1,55 @@
+﻿@model BatTrangTourist.Models.Question
+@{
+    ViewBag.Title = "Cập nhật câu hỏi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Cập nhật câu hỏi</h2>
+@if (ViewBag.Result == 1)
+{
+    <div id="AlertBox" class="alert alert-success"><strong>Cập nhật câu hỏi thành công</strong></div>
+}
+<a class="btn quick-link" href="@Url.Action("ListProduct")"><i class="far fa-list mr-1"></i> Danh sách Tour</a>
+<div class="box_content">
+    <div class="row">
+        <div class="col-sm-12 col-lg-8">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(a => Model.ProductId)
+                if (Model != null)
+                {
+                    @Html.HiddenFor(a => Model.Id)
+                }
+                <table class="form_table form-table-cat">
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(a => Model.QuestionName)</td>
+                        <td class="form_text">@Html.EditorFor(a => Model.QuestionName)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(a => Model.Body)</td>
+                        <td class="form_text">@Html.EditorFor(a => Model.Body)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(a => Model.Sort)</td>
+                        <td class="form_text">@Html.EditorFor(a => Model.Sort)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(a => Model.Active)</td>
+                        <td class="form_text">@Html.CheckBoxFor(a => Model.Active, new { @checked = "checked" })</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name"></td>
+                        <td class="form_text">
+                            <input type="submit" class="btn quick-link" value="Cập nhật" />
+                        </td>
+                    </tr>
+                </table>
+            }
+        </div>
+        <div class="col-sm-12 col-lg-12">
+            @Html.Action("ListQuestion", "ProductVcms")
+        </div>
+    </div>
+</div>

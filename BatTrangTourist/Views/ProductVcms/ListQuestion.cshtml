@@ -1,0 +1,48 @@
+﻿@model IEnumerable<BatTrangTourist.Models.Question>
+
+<table class="list_table tablecenter" id="list-cat">
+    <tr>
+        <th>STT</th>
+        <th>Câu hỏi</th>
+        <th>Câu trả lời</th>
+        <th>Hoạt động</th>
+        <th style="width: 140px;"></th>
+    </tr>
+    <tbody id="sortable-cat">
+        @foreach (var question in Model)
+        {
+            <tr data-id="@question.Id" style="background: #ededed;">
+                <td style="width: 150px;">@Html.DisplayFor(a => question.Sort)</td>
+                <td class="left"><strong>@question.QuestionName</strong></td>
+                <td>@Html.Raw(question.Body)</td>
+                <td>@Html.DisplayFor(a => question.Active)</td>
+                <td>
+                    @Html.ActionLink("Sửa", "AddOrUpdateQuestion", new { questionId = question.Id }) -
+                    <a href="javascript:;" onclick="deleteQuestion('@question.Id')" style="color: red">Xóa</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<script type="text/javascript">
+    function deleteQuestion(id) {
+        if (confirm("Bạn có chắc chắn xóa câu hỏi này không?")) {
+            $.post("/ProductVcms/DeleteQuestion", { questionId: id }, function (data) {
+                if (data) {
+                    $.toast({
+                        text: 'Đang xóa câu hỏi',
+                        position: 'bottom-right',
+                        icon: 'success',
+                    })
+                    $("tr[data-id='" + id + "']").fadeOut();
+                } else {
+                    $.toast({
+                        text: 'Quá trình thực hiện không thành công. Hãy thử lại',
+                        position: 'bottom-right',
+                        icon: 'error',
+                    })
+                }
+            });
+        }
+    };
+</script>

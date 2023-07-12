@@ -1,0 +1,252 @@
+﻿@model BatTrangTourist.ViewModel.HeaderViewModel
+@using BatTrangTourist.Models
+@{
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+    var username = ViewContext.RouteData.Values["Username"].ToString();
+    var avatar = ViewContext.RouteData.Values["Avatar"].ToString();
+    var color = ViewContext.RouteData.Values["Color"].ToString();
+}
+
+<section class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-2">
+                    <a href="@Url.Action("Index")" class="logo">
+                        @if (config.Image != null)
+                        {
+                            <img src="@Path.Combine("/images/configs/", config.Image)" alt="@config.Title" />
+                        }
+                    </a>
+                </div>
+                <div class="col-6 d-flex align-items-center">
+                    <form action="@Url.Action("SearchProduct")" class="header-search">
+                        <input type="text" name="keywords" class="form-control" placeholder="Tìm kiếm theo điểm đến, hoạt động" autocomplete="off" required />
+                        <button type="submit">
+                            <i class="fa-regular fa-magnifying-glass"></i>
+                        </button>
+                    </form>
+                </div>
+                <div class="col-4 d-flex justify-content-end align-items-center">
+                    <a href="#" class="default-header">Trợ giúp</a>
+                    @if (username == "")
+                    {
+                        <div class="header-avatar-box">
+                            <a href="@Url.Action("Register", "User")" class="default-header">Đăng ký</a>
+                            <a href="@Url.Action("Login", "User")" class="default-header default-signin">
+                                <i class="fa-solid fa-user"></i> Đăng nhập
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="user">
+                            @if (avatar == "")
+                            {
+                                <div class="txt-avatar" style="background: @color">@username.ToUpper().Substring(0, 1)</div>
+                            }
+                            else
+                            {
+                                <img src="@Path.Combine("/images/users/", avatar)" alt="@username" />
+                            }
+                            <span class="user-name">@username</span>
+                            <i class="fas fa-caret-down"></i>
+                            <div class="box-login">
+                                <div class="header-login author-login">
+                                    <ul class="ul-reset">
+                                        <li>
+                                            <a href="@Url.Action("UserInfo", "Dashboard")">
+                                                <div class="user-icon">
+                                                    <i class="fas fa-user"></i>
+                                                </div>
+                                                Thông tin cá nhân
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("UserOrder", "Dashboard")">
+                                                <div class="user-icon">
+                                                    <i class="fas fa-box"></i>
+                                                </div>
+                                                Đơn hàng của tôi
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("ChangePassword", "Dashboard")">
+                                                <div class="user-icon">
+                                                    <i class="fa-solid fa-lock"></i>
+                                                </div>
+                                                Đổi mật khẩu
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="@Url.Action("Logout", "User")">
+                                                <div class="user-icon">
+                                                    <i class="fal fa-sign-out"></i>
+                                                </div>
+                                                Đăng xuất
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="site-overlay"></div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="header-bottom">
+        <div class="container">
+            <ul class="ul-reset nav">
+                <li>
+                    <a href="@Url.Action("AllProduct")">Tour</a>
+                    @if (Model.ProductCategories.Any())
+                    {
+                        <div class="sub-nav">
+                            @foreach (var item in Model.ProductCategories)
+                            {
+                                <a href="@Url.Action("ProductCategory", "Home", new { url = item.Url })">@item.CategoryName</a>
+                            }
+                        </div>
+                    }
+                </li>
+                @if (Model.ArticleCategories.Any(a => a.ParentId == null))
+                {
+                    foreach (var item in Model.ArticleCategories.Where(a => a.ParentId == null))
+                    {
+                        <li>
+                            <a href="@Url.Action("ArticleCategory", "Home", new { url = item.Url })">@item.CategoryName</a>
+                            @if (Model.ArticleCategories.Any(a => a.ParentId == item.Id))
+                            {
+                                <div class="sub-nav">
+                                    @foreach (var child in Model.ArticleCategories.Where(a => a.ParentId == item.Id))
+                                    {
+                                        <a href="@Url.Action("ArticleCategory", "Home", new { url = child.Url })">@child.CategoryName</a>
+                                    }
+                                </div>
+                            }
+                        </li>
+                    }
+                }
+                <li>
+                    <a href="@Url.Action("Contact")">Liên hệ</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</section>
+<section class="header-mb">
+    <div class="container">
+        <div class="row">
+            <div class="col-3 d-flex align-items-center">
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+            <div class="col-6 d-flex justify-content-center">
+                <a href="@Url.Action("Index")" class="logo">
+                    @if (config.Image != null)
+                    {
+                        <img src="@Path.Combine("/images/configs/", config.Image)" alt="@config.Title" />
+                    }
+                </a>
+            </div>
+            <div class="col-3"></div>
+        </div>
+    </div>
+    <div class="menu-mb">
+        <form action="@Url.Action("SearchProduct")" class="header-search-mb">
+            <input type="text" name="keywords" required="" class="form-control" placeholder="Nhập tìm kiếm bằng từ khóa..." />
+            <button type="submit">
+                <i class="far fa-search"></i>
+            </button>
+        </form>
+        <ul class="ul-reset nav-mb">
+            <li>
+                <a href="@Url.Action("AllProduct")">Tour</a>
+                <div class="expand-bar"></div>
+                @if (Model.ProductCategories.Any())
+                {
+                    <div class="sub-nav-mb">
+                        @foreach (var item in Model.ProductCategories)
+                        {
+                            <a href="@Url.Action("ProductCategory", "Home", new { url = item.Url })">@item.CategoryName</a>
+                        }
+                    </div>
+                }
+            </li>
+            @if (Model.ArticleCategories.Any(a => a.ParentId == null))
+            {
+                foreach (var item in Model.ArticleCategories.Where(a => a.ParentId == null))
+                {
+                    <li>
+                        <a href="@Url.Action("ArticleCategory", "Home", new { url = item.Url })">@item.CategoryName</a>
+                        @if (Model.ArticleCategories.Any(a => a.ParentId == item.Id))
+                        {
+                            <div class="sub-nav-mb">
+                                @foreach (var child in Model.ArticleCategories.Where(a => a.ParentId == item.Id))
+                                {
+                                    <a href="@Url.Action("ArticleCategory", "Home", new { url = child.Url })">@child.CategoryName</a>
+                                }
+                            </div>
+                        }
+                    </li>
+                }
+            }
+            <li>
+                <a href="@Url.Action("Contact")">Liên hệ</a>
+            </li>
+        </ul>
+        @if (username == "")
+        {
+            <div class="box-account">
+                <a href="@Url.Action("Login", "User")" class="login">
+                    Đăng nhập
+                </a>
+                <a href="@Url.Action("Register", "User")" class="resgister">
+                    Đăng ký
+                </a>
+            </div>
+        }
+        else
+        {
+            <ul class="ul-reset author-login-mb">
+                <li>
+                    <a href="@Url.Action("UserInfo", "Dashboard")">
+                        <div class="user-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        Thông tin cá nhân
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("UserOrder", "Dashboard")">
+                        <div class="user-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        Đơn hàng của tôi
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("ChangePassword", "Dashboard")">
+                        <div class="user-icon">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        Đổi mật khẩu
+                    </a>
+                </li>
+                <li>
+                    <a href="@Url.Action("Logout", "User")">
+                        <div class="user-icon">
+                            <i class="fal fa-sign-out"></i>
+                        </div>
+                        Đăng xuất
+                    </a>
+                </li>
+            </ul>
+        }
+    </div>
+</section>

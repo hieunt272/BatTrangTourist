@@ -1,0 +1,97 @@
+﻿@model BatTrangTourist.ViewModel.ListFeedbackViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Danh sách phản hồi";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .img-border {
+        width: 100px;
+    }
+</style>
+
+@if (ViewBag.Result == "success")
+{
+    <div id="AlertBox" class="alert alert-success"><strong>Thêm mới phản hồi thành công</strong></div>
+}
+@if (ViewBag.Result == "update")
+{
+    <div id="AlertBox" class="alert alert-success"><strong>Cập nhật phản hồi thành công</strong></div>
+}
+<a class="btn quick-link" href="@Url.Action("Feedback")"><i class="fal fa-plus-circle mr-1"></i>Thêm phản hồi</a>
+<div class="box_content">
+    <div class="form-search-list">
+        <form action="@Url.Action("ListFeedback")" method="get" style="margin-left: 0;">
+            <p>
+                Tìm tên @Html.TextBoxFor(a => a.Name, new { @class = "w300" })
+                <button type="submit" class="btn-search">Tìm kiếm</button>
+            </p>
+        </form>
+    </div>
+    <p>Có tổng số <strong>@Model.Feedbacks.TotalItemCount</strong> phản hồi</p>
+    <table class="list_table tablecenter table-striped">
+        <tbody>
+            <tr>
+                <th>STT</th>
+                <th style="width: 50px">Hình ảnh</th>
+                <th style="width: 200px">Tên</th>
+                <th style="width: 200px">Tên Tour</th>
+                <th>Nội dung</th>
+                <th style="width: 100px">Hoạt động</th>
+                <th style="width: 150px"></th>
+            </tr>
+            @foreach (var feedback in Model.Feedbacks)
+            {
+                <tr data-id="@feedback.Id">
+                    <td>@Html.DisplayFor(model => feedback.Sort)</td>
+                    <td>
+                        @if (feedback.Image != null)
+                        {
+                            <img class="img-border" src="@Path.Combine("/images/feedbacks/", feedback.Image)" alt="" /> }
+                        else
+                        {
+                            @:NO PICTURE
+                        }
+                    </td>
+                    <td>
+                        <p>
+                            <a href="@Url.Action("UpdateFeedback", new {feedbackId = feedback.Id})"><strong>@feedback.Name</strong></a>
+                        </p>
+                        @feedback.Classify
+                    </td>
+                    <td>@feedback.TourName</td>
+                    <td class="text-left">@feedback.Content</td>
+                    <td>@Html.DisplayFor(model => feedback.Active)</td>
+                    <td>
+                        @Html.ActionLink("Sửa", "UpdateFeedback", new { feedbackId = feedback.Id })
+                        - <a href="javascript:;" onclick="deleteService('@feedback.Id')" style="color: red;">Xóa</a>
+                    </td>
+                </tr>
+            }
+            @if (Model.Feedbacks.PageCount > 1)
+            {
+                <tr>
+                    <td colspan="8">@Html.PagedListPager(Model.Feedbacks, page => Url.Action("ListFeedback", new { page, name = Model.Name }))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        function deleteService(id) {
+            if (confirm("Bạn có chắc chắn xóa bài viết này không?")) {
+                $.post("/Contact/DeleteFeedback", { feedbackId: id }, function (data) {
+                    if (data) {
+                        alert("Xóa bài viết thành công");
+                        $("tr[data-id='" + id + "']").fadeOut();
+                    }
+                    else {
+                        alert("Quá trình thực hiện không thành công");
+                    }
+                });
+            }
+        }
+    </script>
+}

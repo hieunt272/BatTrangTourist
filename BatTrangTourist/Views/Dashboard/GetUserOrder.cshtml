@@ -1,0 +1,75 @@
+﻿@model BatTrangTourist.ViewModel.UserOrderViewModel
+@using BatTrangTourist.Models
+@{
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+}
+
+@if (Model.Orders.Any())
+{
+    <div class="order-list">
+        @foreach (var order in Model.Orders)
+        {
+            <div class="order-item" data-id="@order.Id">
+                <div class="status">
+                    @Html.DisplayFor(m => order.Status)
+                </div>
+                <div class="table-responsive">
+                    <table class="table">
+                        <tr>
+                            <th class="text-xl-left" style="width: 38%;">Thông tin Tour</th>
+                            <th class="text-xl-right" style="width: 30%;">Giá</th>
+                            <th class="text-xl-right" style="width: 14%;">Thành tiền</th>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="flex-item">
+                                    @if (order.Service.Product.Image != null)
+                                    {
+                                        <img src="@Path.Combine("/images/products/", order.Service.Product.Image)" alt="@order.Service.Product.Name" class="img-product" />
+                                    }
+                                    <div class="product-name">
+                                        @order.Service.Product.Name<br />
+                                        <span>Dịch vụ: @order.Service.Name</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex-col">
+                                    @if (order.AdultQuantity > 0)
+                                    {
+                                        <span>Người lớn: @Convert.ToInt32(order.AdultPrice).ToString("N0") x @order.AdultQuantity</span>
+                                    }
+                                    @if (order.ChildQuantity > 0)
+                                    {
+                                        <span>Trẻ em: @Convert.ToInt32(order.ChildPrice).ToString("N0") x @order.ChildQuantity</span>
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="flex-reverse" id="total">
+                                    @order.Total.ToString("N0") ₫
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="sum border-top">Tổng tiền: <span>@order.Total.ToString("N0") ₫</span> </div>
+                @if (order.Status == 1)
+                {
+                    <div class="cancel-order">
+                        <a href="javascript:;" onclick="cancelOrder(@order.Id)">
+                            Hủy đơn
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+}
+else
+{
+    <div class="order-empty user-box">
+        <img src="~/Content/images/img-main/shopping-cart.gif" /> <br />
+        Chưa có đơn hàng! <br />
+    </div>
+}

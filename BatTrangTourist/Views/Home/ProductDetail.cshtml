@@ -1,0 +1,561 @@
+﻿@model BatTrangTourist.ViewModel.ProductDetailViewModel
+@using Helpers
+@{
+    ViewBag.Title = Model.Product.TitleMeta ?? Model.Product.Name;
+    ViewBag.Description = Model.Product.DescriptionMeta ?? Model.Product.Description;
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("ProductDetail", new { url = Model.Product.Url });
+
+
+    if (Model.Product.Image != null)
+    {
+        ViewBag.ImageShare = Request.Url?.GetLeftPart(UriPartial.Authority) + Path.Combine("/images/albumProducts/", Model.Product.Image);
+    }
+}
+@Styles.Render("~/Content/themes/base/css")
+
+@if (ViewBag.Result == "success")
+{
+    <div id="AlertBox" class="success">
+        Cảm ơn bạn đã đánh giá
+        <div class="text-small">
+            Cảm ơn bạn đã đánh giá
+        </div>
+    </div>
+}
+<section class="bg-breadcrumb">
+    <div class="container">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+            <li class="breadcrumb-item">
+                <a href="@Url.Action("ProductCategory", "Home", new { url = Model.Product.ProductCategory.Url })">
+                    @Model.Product.ProductCategory.CategoryName
+                </a>
+            </li>
+            <li class="breadcrumb-item">@Model.Product.Name</li>
+        </ul>
+    </div>
+</section>
+<section class="tour-detail">
+    <div class="container">
+        <h2 class="tour-title">@Model.Product.Name</h2>
+        <div class="d-flex mt-2 align-items-center justify-content-between">
+            <div class="meta-vote">
+                <div class="star-box">
+                    <div class="star-gray">
+                        <i class="fal fa-star"></i>
+                    </div>
+                    <div class="star-color" style="width: @(Model.Product.ResultReview() * 20)%">
+                        <i class="fas fa-star"></i>
+                    </div>
+                </div>
+                <span class="vote">@Model.Product.ResultReview()</span> (@Model.ReviewCount Đánh giá)
+            </div>
+            <div>
+                <button class="btn-base" onclick="window.open('https://www.facebook.com/sharer.php?u=' + encodeURIComponent(location.href) + '&amp;t=' + encodeURIComponent(document.title));return false">
+                    <i class="fab fa-facebook-f"></i>
+                    Share
+                </button>
+                <a href="javascript:window.print()" class="btn-base">
+                    <i class="fas fa-print"></i>
+                    Print
+                </a>
+            </div>
+        </div>
+        @if (Model.Product.AlbumProducts.Any())
+        {
+            <div class="list-img">
+                <div class="row">
+                    <div class="col-lg-7 col-md-7">
+                        <a href="@Path.Combine("/images/albumProducts/", Model.LargeImage.Image)" data-fancybox="product" data-caption="@Model.LargeImage.TitleImage" class="position-relative fancybox-text">
+                            <img src="@Path.Combine("/images/albumProducts/", Model.LargeImage.Image)" alt="@Model.LargeImage.TitleImage" class="large-img" />
+                            <div class="title-image pb-3">
+                                <span>@Model.LargeImage.TitleImage</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-lg-5 col-md-5">
+                        <div class="row">
+                            @if (Model.AfterImages.Any())
+                            {
+                                foreach (var item in Model.AfterImages)
+                                {
+                                    <div class="col-6">
+                                        <a href="@Path.Combine("/images/albumProducts/", item.Image)" data-fancybox="product" data-caption="@item.TitleImage" class="position-relative fancybox-text">
+                                            <img src="@Path.Combine("/images/albumProducts/", item.Image)" alt="@item.TitleImage" />
+                                            <div class="title-image">
+                                                <span>@item.TitleImage</span>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            }
+                            @if (Model.LastImage != null)
+                            {
+                                <div class="col-6">
+                                    <a href="@Path.Combine("/images/albumProducts/", Model.LastImage.Image)" data-fancybox="product" data-caption="@Model.LastImage.TitleImage" class="position-relative fancybox-text">
+                                        <img src="@Path.Combine("/images/albumProducts/", Model.LastImage.Image)" alt="@Model.LastImage.TitleImage" />
+                                        @if (Model.MoreImage > 0)
+                                        {
+                                            <div class="overlay-img">
+                                                <span>+@Model.MoreImage</span>
+                                                <img src="~/Content/images/img-main/img-more.png" alt="img-more" />
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="title-image">
+                                                <span>@Model.LastImage.TitleImage</span>
+                                            </div>
+                                        }
+                                    </a>
+                                </div>
+                            }
+                            <div class="hidden-img">
+                                @foreach (var item in Model.AlbumProducts.Skip(5))
+                                {
+                                    <a href="@Path.Combine("/images/albumProducts/", item.Image)" data-fancybox="product" data-caption="@item.TitleImage" class="position-relative fancybox-text">
+                                        <img src="@Path.Combine("/images/albumProducts/", item.Image)" alt="@item.TitleImage" />
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        <div class="row">
+            <div class="col-lg-8 order-lg-0 order-1">
+                @if (Model.Product.Body != null)
+                {
+                    <div class="highlights">
+                        @Html.Raw(Model.Product.Body)
+                        <div class="toggle-view">
+                            <span class="view-text">Xem thêm</span>
+                        </div>
+                    </div>
+                }
+                @if (Model.FirstService != null)
+                {
+                    <div id="package_option">
+                        <div class="section-header">Các gói dịch vụ</div>
+                        <form action="@Url.Action("BookTour", new { name = Html.ConvertToUnSign(Model.Product.Name) })" class="box-package-option" id="bookForm">
+                            @Html.ValidationSummary(true)
+                            <input type="hidden" name="ServiceId" value="@Model.FirstService.Id" id="serviceId" />
+                            <div class="box-title">
+                                <span class="title">Vui lòng chọn ngày & gói dịch vụ</span>
+                                <button type="reset" class="clear-all">Xóa tất cả</button>
+                            </div>
+                            <div class="package-content">
+                                <div class="package-title">Xin chọn ngày đi tour</div>
+                                <button type="button" class="package-date">
+                                    <i class="fa-regular fa-calendar"></i><span>Ngày khởi hành</span>
+                                </button>
+                                <input type="hidden" name="StartDate" id="startDate" value="" />
+                                <div class="modal-action m-start-date">
+                                    <div class="js-startdate"></div>
+                                </div>
+                                <div class="action-overlay"></div>
+                            </div>
+                            <div class="package-content">
+                                <div class="package-title">Loại gói dịch vụ</div>
+                                <div class="attr-btn-group">
+                                    <div class="ticket-type active" data-id="@Model.FirstService.Id">
+                                        @Model.FirstService.Name
+                                    </div>
+                                    @if (Model.Services.Any())
+                                    {
+                                        foreach (var item in Model.Services)
+                                        {
+                                            <div class="ticket-type" data-id="@item.Id">
+                                                @item.Name
+                                            </div>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div id="js-service">
+                                <div class="package-content">
+                                    <div class="package-title">Số lượng</div>
+                                    @if (Model.FirstService.AdultPrice != null)
+                                    {
+                                        <div class="package-detail">
+                                            <div class="counter-left">Người lớn</div>
+                                            <div class="counter-right">
+                                                <div class="counter-price">@Convert.ToInt32(Model.FirstService.AdultPrice).ToString("N0") ₫</div>
+                                                <div class="quantity">
+                                                    <input type="text" value="0" min="0" id="number" name="AdultQuantity" class="nice-number input-number" maxlength="4" readonly />
+                                                </div>
+                                            </div>
+                                            <input type="hidden" class="price-hidden" value="@Convert.ToInt32(Model.FirstService.AdultPrice)" />
+                                            <input type="hidden" class="total-item" value="0" />
+                                        </div>
+                                    }
+                                    @if (Model.FirstService.ChildPrice != null)
+                                    {
+                                        <div class="package-detail">
+                                            <div class="counter-left">Trẻ em (5-9T)</div>
+                                            <div class="counter-right">
+                                                <div class="counter-price">@Convert.ToInt32(Model.FirstService.ChildPrice).ToString("N0") ₫</div>
+                                                <div class="quantity">
+                                                    <input type="text" value="0" min="0" id="number" name="ChildQuantity" class="nice-number input-number" maxlength="4" readonly />
+                                                </div>
+                                            </div>
+                                            <input type="hidden" class="price-hidden" value="@Convert.ToInt32(Model.FirstService.ChildPrice)" />
+                                            <input type="hidden" class="total-item" value="0" />
+                                        </div>
+                                    }
+                                </div>
+                                <div class="options-group">
+                                    <div class="package-title">Thanh toán</div>
+                                    <div class="package-btnGroup">
+                                        <div class="price-detail">
+                                            <span class="price">- ₫</span>
+                                            <div class="price-poptip">
+                                                Chi tiết <i class="fa-light fa-angle-up"></i>
+                                                <div class="poptip-popper">
+                                                    <div class="detail-box-title">Chi tiết thanh toán</div>
+                                                    <div class="detail-box-field">
+                                                        <div class="sub-title">@Model.FirstService.Name</div>
+                                                        @*<div class="line-box">
+                                                                <span class="text">Người lớn</span>
+                                                                <span class="value">
+                                                                    614.706 ₫ <span class="count">x 1</span>
+                                                                </span>
+                                                            </div>*@
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <button type="submit" class="btn-book">Đặt ngay</button>
+                                    </div>
+                                </div>
+                                <div class="details-content">
+                                    <div class="box-title">
+                                        <span class="title">Chi tiết gói dịch vụ</span>
+                                        @*<button type="button" class="expand-icon">
+                                                <i class="fa-regular fa-arrow-up-right-and-arrow-down-left-from-center"></i>
+                                            </button>*@
+                                    </div>
+                                    <div class="overflow-hidden">
+                                        <div class="content-scroll">
+                                            @if (Model.FirstService.Tags.Any())
+                                            {
+                                                <div class="tagging-wrap">
+                                                    @foreach (var item in Model.FirstService.Tags)
+                                                    {
+                                                        <div class="tag-item">@item.Name</div>
+                                                    }
+                                                </div>
+                                            }
+                                            <div class="accordion" id="service-detail">
+                                                @if (Model.FirstService.Schedule != null)
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#schedule" aria-expanded="true">
+                                                                Lịch trình <i class="fa-light fa-angle-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div id="schedule" class="collapse show">
+                                                            <div class="card-body service-content">
+                                                                @Html.Raw(Model.FirstService.Schedule)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @if (Model.FirstService.Include != null)
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#include" aria-expanded="true">
+                                                                Bao gồm <i class="fa-light fa-angle-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div id="include" class="collapse show">
+                                                            <div class="card-body service-content">
+                                                                @Html.Raw(Model.FirstService.Include)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @if (Model.FirstService.Note != null)
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#note" aria-expanded="true">
+                                                                Lưu ý trước khi đặt <i class="fa-light fa-angle-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div id="note" class="collapse show">
+                                                            <div class="card-body service-content">
+                                                                @Html.Raw(Model.FirstService.Note)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @if (Model.FirstService.Terms != null)
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#terms" aria-expanded="true">
+                                                                Điều khoản chung <i class="fa-light fa-angle-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div id="terms" class="collapse show">
+                                                            <div class="card-body service-content">
+                                                                @Html.Raw(Model.FirstService.Terms)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                @if (Model.FirstService.Manual != null)
+                                                {
+                                                    <div class="card">
+                                                        <div class="card-header">
+                                                            <a class="card-link" data-toggle="collapse" data-parent="#service-detail" href="#manual" aria-expanded="true">
+                                                                Hướng dẫn sử dụng <i class="fa-light fa-angle-down"></i>
+                                                            </a>
+                                                        </div>
+                                                        <div id="manual" class="collapse show">
+                                                            <div class="card-body service-content">
+                                                                @Html.Raw(Model.FirstService.Manual)
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                }
+                @if (Model.Product.About != null)
+                {
+                    <div class="section-header">Về dịch vụ này</div>
+                    <div class="service-about body-content">
+                        @Html.Raw(Model.Product.About)
+                    </div>
+                }
+                @if (Model.Product.Note != null)
+                {
+                    <div class="section-header">Những điều cần lưu ý</div>
+                    <div class="service-about body-content">
+                        @Html.Raw(Model.Product.Note)
+                    </div>
+                }
+                <div class="section-header">Liên hệ với chúng tôi</div>
+                <p>Bạn thắc mắc về dịch vụ này? Chat với Chúng tôi!</p>
+                <button type="button" class="btn-chat">
+                    <i class="fa-solid fa-comments"></i> Chat với chúng tôi
+                </button>
+                <div class="section-header">Đánh giá gần đây</div>
+                @if (Model.Product.ImageReview != null)
+                {
+                    var imgReviews = Model.Product.ImageReview.Split(',');
+                    var imgMore = imgReviews.Length - 4;
+                    var i = 1;
+                    <div class="box-album p-3">
+                        <div class="box-left">
+                            <div>
+                                <div class="title">
+                                    Album hình
+                                </div>
+                                <div class="count-images">
+                                    <span>@imgReviews.Length</span> Ảnh
+                                </div>
+                            </div>
+                            @if (imgReviews.Length > 4)
+                            {
+                                <a href="@Path.Combine("/images/products/", imgReviews[4])" data-fancybox="reviews" class="btn-album">
+                                    Chi tiết
+                                    <i class="fal fa-angle-right"></i>
+                                </a>
+                            }
+                        </div>
+                        <div class="list-album-img">
+                            @foreach (var img in imgReviews.Take(4))
+                            {
+                                <a href="@Path.Combine("/images/products/", img)" data-fancybox="reviews" class="img-review">
+                                    <img data-src="@Path.Combine("/images/products/", img)" src="~/Content/images/img-main/base64.gif" alt="Ảnh đánh giá" class="lazyload" />
+                                    @if (imgReviews.Length > 4 && i == 4)
+                                    {
+                                        <span class="overlay-img">
+                                            <span>+@imgMore</span>
+                                            <img src="~/Content/images/img-main/img-more.png" alt="img-more" />
+                                        </span>
+                                    }
+                                </a>
+                                i++;
+                            }
+                        </div>
+                        @if (imgReviews.Length > 4)
+                        {
+                            <div class="list-album-hidden">
+                                @foreach (var img in imgReviews.Skip(5))
+                                {
+                                    <a href="@Path.Combine("/images/products/", img)" data-fancybox="reviews">
+                                        <img data-src="@Path.Combine("/images/products/", img)" src="~/Content/images/img-main/base64.gif" alt="Ảnh đánh giá" class="lazyload" />
+                                    </a>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+                <div id="list-item">
+                    @Html.Action("GetReview", new { proId = Model.Product.Id, name = Model.Product.Name })
+                </div>
+                <div class="modal fade" id="review" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <div class="modal-title font-weight-bold">Đánh giá</div>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <i class="fal fa-times"></i>
+                                    Đóng
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="info-product">
+                                    @if (Model.Product.Image != null)
+                                    {
+                                        var arrImg = @Model.Product.Image.Split(',');
+                                        <img src="@Path.Combine("/images/products/", arrImg[0])" alt="@Model.Product.Name" />
+                                    }
+                                    @Model.Product.Name
+                                </div>
+                                @using (Html.BeginForm("ProductDetail", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                                {
+                                    @Html.ValidationSummary(true)
+                                    <input type="hidden" name="Review.ProductId" value="@Model.Product.Id">
+
+                                    <div id="vote"></div>
+                                    <input type="hidden" name="Review.Vote" id="starsInput" value="">
+                                    @Html.TextAreaFor(model => model.Review.Content, new { @class = "form-control", placeholder = "Mời bạn chia sẻ cảm nhận về chuyến đi", rows = 4 })
+                                    @Html.ValidationMessageFor(model => model.Review.Content)
+                                    <div class="alert alert-info small mt-3">
+                                        <p class="btn btn-success fileinput-button">
+                                            <i class="fa fa-plus"></i>
+                                            <span>Chọn ảnh...</span>
+                                            <input type="file" id="fileupload" name="files[]" accept="image/*" multiple="" />
+                                        </p><br />
+                                        - Chọn ảnh để upload: (gif, png, jpg, jpeg < 4MB)
+                                    </div>
+                                    <div class="d-flex">
+                                        <ul id="ListImages"></ul>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            @Html.TextBoxFor(model => model.Review.FullName, new { @class = "form-control", placeholder = "Họ và tên (bắt buộc)" })
+                                            @Html.ValidationMessageFor(model => model.Review.FullName)
+                                        </div>
+                                        <div class="col-6">
+                                            @Html.TextBoxFor(model => model.Review.Mobile, new { @class = "form-control", placeholder = "Số điện thoại (bắt buộc)" })
+                                            @Html.ValidationMessageFor(model => model.Review.Mobile)
+                                        </div>
+                                        <div class="col-12 mt-3 d-flex align-items-center">
+                                            @Html.LabelFor(model => model.Review.Avatar)
+                                            @Html.TextBoxFor(model => model.Review.Avatar, new { type = "file", @class = "ml-3" })
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-4">
+                                        <button type="submit" class="btn-submit">
+                                            Gửi đánh giá
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.Questions.Any())
+                {
+                    <div class="section-header">Câu hỏi thường gặp</div>
+                    <div class="accordion" id="questions">
+                        @foreach (var item in Model.Questions)
+                        {
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="mb-0">
+                                        <button class="btn collapsed" type="button" data-toggle="collapse" data-target="#question-@item.Id">
+                                            @item.QuestionName <i class="fa-regular fa-angle-down"></i>
+                                        </button>
+                                    </h2>
+                                </div>
+                                <div id="question-@item.Id" class="collapse" data-parent="#questions">
+                                    <div class="card-body body-content">
+                                        @Html.Raw(item.Body)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+            @if (Model.FirstService != null)
+            {
+                <div class="col-lg-4 order-lg-1 order-0 position-relative">
+                    <div class="right-price">
+                        <span id="service-price">@Convert.ToInt32(Model.FirstService.AdultPrice).ToString("N0") ₫</span>
+                        <a href="#package_option" class="select-pkg-btn">Chọn các gói dịch vụ</a>
+                    </div>
+                </div>
+            }
+        </div>
+        @if (Model.Articles.Any())
+        {
+            <div class="section-header">
+                Bài viết liên quan
+                <a href="@Url.Action("AllArticle")" class="btn-view">
+                    Xem tất cả <i class="fa-solid fa-chevrons-right"></i>
+                </a>
+            </div>
+            <div class="row article-list">
+                @foreach (var item in Model.Articles)
+                {
+                    <div class="col-lg-3 col-md-6">
+                        <div class="article-item">
+                            <a href="@Url.Action("ArticleDetail", new { url = item.Url })" class="article-img">
+                                @if (item.Image != null)
+                                {
+                                    <img data-src="@Path.Combine("/images/articles/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Subject" class="lazyload" />
+                                }
+                            </a>
+                            <div class="body">
+                                <a href="@Url.Action("ArticleCategory", "Home", new { url = item.Url })" class="article-cat">
+                                    @item.ArticleCategory.CategoryName
+                                </a>
+                                <div class="subject">
+                                    <a href="@Url.Action("ArticleDetail", new { url = item.Url })">
+                                        @item.Subject
+                                    </a>
+                                </div>
+                                <div class="desc">@item.Description</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+
+@section scripts {
+    <script src="~/Scripts/multi-upload/jquery.ui.widget.js"></script>
+    <script src="~/Scripts/jquery-ui-1.13.2.min.js"></script>
+    <script src="~/Scripts/rating.js"></script>
+    <script src="~/Scripts/multi-upload/jquery.fileupload.js"></script>
+    <script src="~/Scripts/jquery.nice-number.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/moment-with-locales.min.js"></script>
+    <script>
+        tourDetail();
+
+        function delfile(divid) {
+            if (confirm('Bạn có chắc xóa ảnh này?')) {
+                $('#' + divid).parent().fadeOut().remove();
+            }
+        }
+    </script>
+}

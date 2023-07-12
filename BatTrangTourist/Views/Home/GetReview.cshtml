@@ -1,0 +1,134 @@
+﻿@model BatTrangTourist.ViewModel.ProductDetailViewModel
+@using PagedList.Mvc
+
+@if (Model.Reviews.Any())
+{
+    <div class="box-review">
+        <div class="d-flex justify-content-between align-items-center flex-wrap">
+            <div class="d-flex align-items-center">
+                <div class="point">
+                    <span>
+                        @Model.Product.ResultReview()
+                    </span>
+                    /5
+                </div>
+                <div class="meta-vote">
+                    <div class="star-box">
+                        <div class="star-gray">
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                        </div>
+                        <div class="star-color" style="width: @(Model.Product.ResultReview() * 20)%">
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="count-review">
+                    <span>@Model.ReviewCount</span> đánh giá
+                </div>
+            </div>
+            <button type="button" class="btn-review" data-toggle="modal" data-target="#review">
+                <div class="icon-star">
+                    <i class="fas fa-star"></i>
+                </div>
+                Viết đánh giá
+            </button>
+        </div>
+    </div>
+    <div id="list-item">
+        @foreach (var review in Model.Reviews)
+        {
+            <div class="review-item">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="customer-review">
+                        @if (review.Avatar != null)
+                        {
+                            <img data-src="@Path.Combine("/images/reviews/", review.Avatar)" src="~/Content/images/img-main/base64.gif" class="lazyload" alt="@review.FullName" />
+                        }
+                        else
+                        {
+                            var nameparts = review.FullName.Split(' ').Last();
+                            <div class="txt-avatar" style="background: @review.Color">
+                                @nameparts.Substring(0, 1)
+                            </div>
+                        }
+                        <div class="customer-name">
+                            @review.FullName
+                        </div>
+                    </div>
+                    <div class="time entry-date">
+                        @review.CreateDate.ToString("ddMMyyyyHHmm")
+                    </div>
+                </div>
+                <div class="meta-vote">
+                    <div class="star-box">
+                        <div class="star-gray">
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                            <i class="fa-sharp fa-light fa-star"></i>
+                        </div>
+                        <div class="star-color" style="width: @(review.Vote * 20)%">
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                            <i class="fa-sharp fa-solid fa-star"></i>
+                        </div>
+                    </div>
+                    @if (review.Vote == 5)
+                    {
+                        <div class="favor">
+                            Rất hài lòng
+                        </div>
+                    }
+                </div>
+                <div class="content">
+                    @review.Content
+                </div>
+                @if (review.Image != null)
+                {
+                    var arrImg = review.Image.Split(',');
+                    <div class="row list-review-img">
+                        @foreach (var img in arrImg)
+                        {
+                            <div class="col-lg-2 col-md-2 col-4">
+                                <a href="@Path.Combine("/images/reviews/", img)" data-fancybox="review-@review.Id">
+                                    <img data-src="@Path.Combine("/images/reviews/", img)" src="~/Content/images/img-main/base64.gif" class="lazyload" alt="Đánh giá" />
+                                </a>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        }
+    </div>
+    if (Model.Reviews.PageCount > 1)
+    {
+        <div class="col-12 text-center mt-3" id="contentReview">
+            @Html.PagedListPager(Model.Reviews, page => Url.Action("GetReview", new { page, id = Model.Product.Id }))
+        </div>
+    }
+}
+else
+{
+    <div class="reviews">
+        <div class="alert alert-success small p-2">
+            Đánh giá cho tour <strong>@ViewBag.Name</strong> của chúng tôi!!
+        </div>
+        <button type="button" class="btn-review mt-2" data-toggle="modal" data-target="#review">
+            <div class="icon-star">
+                <i class="fas fa-star"></i>
+            </div>
+            Viết đánh giá
+        </button>
+    </div>
+}

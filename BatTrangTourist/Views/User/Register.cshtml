@@ -1,0 +1,82 @@
+﻿@model BatTrangTourist.ViewModel.RegisterViewModel
+@{
+    ViewBag.Title = "Đăng ký tài khoản";
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("Register");
+}
+<section class="login">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-sm-12 col-lg-5 order-lg-1 order-0">
+                <div class="limiter">
+                    <div class="wrap-login100">
+                        <div class="title"><h2>Đăng ký</h2></div>
+                        @using (Html.BeginForm())
+                        {
+                            @Html.ValidationSummary(true)
+                            @Html.AntiForgeryToken()
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    @Html.LabelFor(model => model.Username, new { @class = "user-name" })
+                                </div>
+                                <div class="col-8">
+                                    @Html.TextBoxFor(model => model.Username, new { @class = "form-control", placeholder = "*Nhập tài khoản" })
+                                    @Html.ValidationMessageFor(model => model.Username)
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    @Html.LabelFor(model => model.Password, new { @class = "user-name" })
+                                </div>
+                                <div class="col-8">
+                                    @Html.PasswordFor(model => model.Password, new { @class = "form-control", placeholder = "*Mật khẩu" })
+                                    @Html.ValidationMessageFor(model => model.Password)
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    @Html.LabelFor(model => model.ConfirmPassword, new { @class = "user-name" })
+                                </div>
+                                <div class="col-8">
+                                    @Html.PasswordFor(model => model.ConfirmPassword, new { @class = "form-control", placeholder = "*Nhập lại mật khẩu" })
+                                    @Html.ValidationMessageFor(model => model.ConfirmPassword)
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    @Html.LabelFor(model => model.PhoneNumber, new { @class = "user-name" })
+                                </div>
+                                <div class="col-8">
+                                    @Html.TextBoxFor(model => model.PhoneNumber, new { @class = "form-control", placeholder = "*Số điện thoại" })
+                                    @Html.ValidationMessageFor(model => model.PhoneNumber)
+                                </div>
+                            </div>
+                            <div class="form-row mb-3">
+                                <div class="col-4">
+                                    @Html.LabelFor(model => model.Email, new { @class = "user-name" })
+                                </div>
+                                <div class="col-8">
+                                    @Html.TextBoxFor(model => model.Email, new { @class = "form-control", placeholder = "*Email" })
+                                    @Html.ValidationMessageFor(model => model.Email)
+                                </div>
+                            </div>
+                            <div class="pb-3 border-bottom text-center">
+                                <button type="submit" class="btn-form">Đăng ký</button>
+                            </div>
+                            <div class="mt-3 text-center btn-login">
+                                Bạn đã có tài khoản?
+                                <a href="@Url.Action("Login", "User")">
+                                    Đăng nhập ngay
+                                </a>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval")
+}

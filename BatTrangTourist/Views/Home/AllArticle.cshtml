@@ -1,0 +1,111 @@
+﻿@model BatTrangTourist.ViewModel.AllArticleViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Tất cả bài viết";
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("AllArticle");
+    ViewBag.Robots = "noindex";
+
+    if (Model.EndCount > Model.Articles.TotalItemCount)
+    {
+        Model.EndCount = Model.Articles.TotalItemCount;
+    }
+}
+
+<section class="container">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+        <li class="breadcrumb-item">Tất cả bài viết</li>
+    </ul>
+    <div class="row mb-4">
+        <div class="col-lg-3 order-lg-0 order-1">
+            <div class="category">
+                <div class="category-title">
+                    danh mục bài viết
+                </div>
+                <div class="accordion" id="category-list">
+                    @foreach (var item in Model.Categories.Where(a => a.ParentId == null))
+                    {
+                        <div class="card">
+                            <div class="card-header" id="heading-@item.Id">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <h2 class="mb-0">
+                                        <a href="@Url.Action("ArticleCategory", "Home", new { url = item.Url })">@item.CategoryName (@item.Articles.Count())</a>
+                                    </h2>
+                                    @if (Model.Categories.Any(a => a.ParentId == item.Id))
+                                    {
+                                        <button class="btn-card" type="button" data-toggle="collapse" data-target="#collapse-@item.Id" aria-expanded="false" aria-controls="collapse-@item.Id">
+                                            <i class="far fa-chevron-down"></i>
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                            @if (Model.Categories.Where(a => a.ParentId == item.Id).Any())
+                            {
+                                <div id="collapse-@item.Id" class="collapse">
+                                    <div class="card-body">
+                                        <ul class="pl-0 mb-0">
+                                            @foreach (var child in Model.Categories.Where(p => p.ParentId == item.Id))
+                                            {
+                                                <li>
+                                                    <a href="@Url.Action("ArticleCategory", "Home", new {url = child.Url})">
+                                                        @child.CategoryName (@child.Articles.Count())
+                                                    </a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9 order-lg-1 order-0">
+            <input type="hidden" name="currentUrl" value="@Url.Action("AllArticle", "Home")" />
+            <div class="filter">
+                @if (Model.Articles.Any())
+                {
+                    <div class="product-result">Hiển thị <strong>@Model.BeginCount - @Model.EndCount</strong> trên tổng số <strong>@Model.Articles.TotalItemCount</strong> bài viết</div>
+                }
+                <div class="sort">
+                    <label for="sort">Sắp xếp:</label>
+                    <select id="sort">
+                        <option value="date-desc">Mới nhất</option>
+                        <option value="date-asc" @if (Model.Sort == "date-asc") { @Html.Raw("selected='selected'") }>Cũ nhất</option>
+                    </select>
+                </div>
+            </div>
+            <div id="list-item-sort">
+                <div class="row">
+                    @if (Model.Articles.Any())
+                    {
+                        foreach (var item in Model.Articles)
+                        {
+                            <div class="col-lg-4 col-md-4">
+                                @Html.Partial("_ArticleItem", item)
+                            </div>
+                        }
+                        if (Model.Articles.PageCount > 1)
+                        {
+                            <div class="col-12 text-center">
+                                @Html.PagedListPager(Model.Articles, page => Url.Action("AllArticle", new { page, sort = Model.Sort }))
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="col-12">
+                            <p class="alert alert-success small">Nội dung hiện chưa được cập nhật. Vui lòng quay lại sau !!!!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+@section scripts{
+    <script>
+        Sort("/Home/GetArticle");
+    </script>
+}

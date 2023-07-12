@@ -1,0 +1,85 @@
+﻿@model BatTrangTourist.ViewModel.FooterViewModel
+@using BatTrangTourist.Models
+@{
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+}
+
+<section class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-5 col-md-6">
+                <a href="@Url.Action("Index")" class="logo">
+                    @if (config.Image != null)
+                    {
+                        <img data-src="@Path.Combine("/images/configs/", config.Image)" src="~/Content/images/img-main/base64.gif" alt="@config.Title" class="lazyload" />
+                    }
+                </a>
+                <div class="title">@config.Title</div>
+                <div class="footer-info">
+                    <i class="fa-solid fa-globe"></i><b>Trụ sở chính:</b> @config.Place
+                </div>
+                <div class="footer-info">
+                    <i class="fa-solid fa-phone"></i><b>Điện thoại:</b><a href="tel:@config.Hotline"> @config.Hotline</a>
+                </div>
+                <div class="footer-info">
+                    <i class="fa-solid fa-envelope"></i><b>Email:</b><a href="mailto:@config.Email"> @config.Email</a>
+                </div>
+                @if (config.InfoFooter != null)
+                {
+                    <div class="body-content">
+                        @Html.Raw(config.InfoFooter)
+                    </div>
+                }
+                <div class="social">
+                    <a href="@config.Facebook" rel="nofollow" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="@config.Twitter" rel="nofollow" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                    <a href="@config.Youtube" rel="nofollow" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="@config.Instagram" rel="nofollow" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6 mt-lg-0 mt-md-0 mt-3">
+                <div class="title">Chính sách & quy định</div>
+                @if (Model.Articles.Any())
+                {
+                    <ul class="ul-reset footer-nav">
+                        @foreach (var item in Model.Articles)
+                        {
+                            <li>
+                                <a href="@Url.Action("ArticleDetail", new { url = item.Url })">
+                                    @item.Subject
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+            </div>
+            <div class="col-lg-3 col-md-6 mt-lg-0 mt-3">
+                <div class="title">Fanpage</div>
+                <div class="embed-responsive embed-responsive-16by9 fanpage">
+                    <div class="fb-page" data-href="@config.Facebook" data-tabs="" data-width="500" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                        <blockquote cite="@config.Facebook" class="fb-xfbml-parse-ignore">
+                            <a href="@config.Facebook">@config.Title</a>
+                        </blockquote>
+                    </div>
+                </div>
+                <div class="title-subcribe">Vui lòng đăng ký để nhận thông tin mới</div>
+                <form class="subcribe-form-2" id="subcribeForm2">
+                    @Html.AntiForgeryToken()
+                    <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn..." required />
+                    <button type="submit"><i class="fa-light fa-envelope"></i></button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        © Copyright BATTRANGTOURIST 2023. Designed by Vicogroup.vn
+    </div>
+</section>
+<section class="overlay"></section>
+<section class="btn-scroll">
+    <i class="fa-light fa-arrow-up"></i>
+</section>
+<a href="https://zalo.me/@config.Zalo" target="_blank" rel="nofollow" class="zalo">
+    <img src="~/Content/images/img-main/zalo-logo.png" alt="Zalo" />
+</a>
+<a href="tel:@config.Hotline" class="suntory-alo-phone suntory-alo-green" id="suntory-alo-phoneIcon" style="left: 0; bottom: 0;"><div class="suntory-alo-ph-circle"></div><div class="suntory-alo-ph-circle-fill"></div><div class="suntory-alo-ph-img-circle"><i class="fal fa-phone-alt"></i></div><div class="tel"><p class="fone">@config.Hotline</p></div> </a>

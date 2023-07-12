@@ -1,0 +1,146 @@
+﻿@model BatTrangTourist.ViewModel.ListReviewViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Danh sách đánh giá";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<style>
+    .list-img {
+        padding-left: 0;
+        display: grid;
+        grid-template-columns: auto auto auto;
+        gap: 5px;
+    }
+
+    .list-img li {
+        list-style: none;
+    }
+
+    .list-img .img-border {
+        width: 100px;
+    }
+</style>
+<div class="p-4">
+    <h2>Danh sách đánh giá</h2>
+    <div class="box_content mt-4">
+        <form action="@Url.Action("ListReview")" method="get">
+            <div class="row">
+                <div class="col-3 mb-3">
+                    <label>Sản phẩm</label>
+                    <select name="productId" class="form_control w300" id="select-product">
+                        <option value="0">Tất cả sản phẩm</option>
+                        @foreach (var product in Model.Products)
+                        {
+                            <option value="@product.Id">@product.Name</option>
+                        }
+                    </select>
+                </div>
+                <div class="col-3 d-flex flex-column-reverse">
+                    <div class="form-group">
+                        <button type="submit" class="btn-search">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <p>Có tổng số <strong>@Model.Reviews.TotalItemCount</strong> đánh giá</p>
+        <table class="list_table tablecenter">
+            <tr>
+                <th style="width: 100px">Ngày đăng</th>
+                <th style="width: 50px">Hình ảnh</th>
+                <th>Họ và tên</th>
+                <th>Số điện thoại</th>
+                <th>Bình chọn</th>
+                <th style="width: 300px">Nội dung</th>
+                <th>Hoạt động</th>
+                <th style="width: 100px"></th>
+            </tr>
+            @foreach (var review in Model.Reviews)
+            {
+                <tr data-id="@review.Id">
+                    <td>@Html.DisplayFor(model => review.CreateDate)</td>
+                    <td>
+                        @if (review.Image != null)
+                        {
+                            var arr = review.Image.Split(',');
+                            <ul class="list-img">
+                                @foreach (var item in arr)
+                                {
+                                    <li>
+                                        <img class="img-border" src="@Path.Combine("/images/reviews/", item)?w=80&h=80" alt="" />
+                                    </li>
+                                }
+                            </ul>
+                        }
+                        else
+                        {
+                            @:NO PICTURE
+                        }
+                    </td>
+                    <td>@Html.DisplayFor(model => review.FullName)</td>
+                    <td>@Html.DisplayFor(model => review.Mobile)</td>
+                    <td>@Html.DisplayFor(model => review.Vote) sao</td>
+                    <td>@Html.DisplayFor(model => review.Content)</td>
+                    <td>@Html.EditorFor(a => review.Active, new { htmlAttributes = new { id = "Active" } })</td>
+                    <td>
+                        <a href="javascript:;" onclick="updateReview(@review.Id)">Cập nhật</a>
+                        - <a href="javascript:;" onclick="deleteReview('@review.Id')">Xóa</a>
+                    </td>
+                </tr>
+            }
+            @if (Model.Reviews.PageCount > 1)
+            {
+                <tr>
+                    <td colspan="8">@Html.PagedListPager(Model.Reviews, page => Url.Action("ListReview", new { page }))</td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $("#select-product").select2();
+
+        function deleteReview(id) {
+            if (confirm("Bạn có chắc chắn xóa đánh giá này không?")) {
+                $.post("/ProductVcms/DeleteReview", { reviewId: id }, function (data) {
+                    if (data) {
+                        $.toast({
+                            text: 'Xóa đánh giá thành công',
+                            position: 'bottom-right',
+                            icon: 'success',
+                        })
+                        $("tr[data-id='" + id + "']").fadeOut();
+                    }
+                    else {
+                        $.toast({
+                            text: 'Quá trình thực hiện không thành công. Hãy thử lại',
+                            icon: 'error',
+                        });
+                    }
+                });
+            }
+        }
+
+        function updateReview(id) {
+            var divId = $("tr[data-id='" + id + "']");
+            var active = divId.find("input#Active").prop("checked");
+
+            $.post("/ProductVcms/UpdateReview", { active: active, reviewId: id }, function (data) {
+                if (data) {
+                    $.toast({
+                        text: 'Cập nhật thành công',
+                        position: 'bottom-right',
+                        icon: 'success',
+                    });
+                } else {
+                    $.toast({
+                        text: 'Quá trình thực hiện không thành công. Hãy thử lại',
+                        position: 'bottom-right',
+                        icon: 'error',
+                    });
+                };
+            });
+        }
+    </script>
+}

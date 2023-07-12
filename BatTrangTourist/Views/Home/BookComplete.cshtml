@@ -1,0 +1,20 @@
+﻿@using BatTrangTourist.Models
+@{
+    ViewBag.Title = "Đăng ký Tour thành công";
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("BookComplete");
+    ViewBag.Robots = "noindex";
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+}
+
+<h1 class="sing-header-title" style="padding-top: 100px">ĐẶT TOUR THÀNH CÔNG!</h1>
+<div class="container pt-4 pb-5">
+    <div class="alert alert-success text-center pt-4">
+        <p>
+            Mã đăng ký Tour của bạn là: <strong>@ViewBag.OrderNumber</strong><br />
+            Cảm ơn bạn đã gửi đăng ký tour tới @config.Title<br />
+            Chúng tôi sẽ liên hệ lại với bạn trong thời gian sớm nhất.<br />
+            Mọi thông tin liên hệ quý khách gọi số @config.Hotline hoặc email: @config.Email
+        </p>
+        <p>Trân trọng cám ơn!</p>
+    </div>
+</div>

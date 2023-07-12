@@ -1,0 +1,25 @@
+﻿@model BatTrangTourist.Models.Article
+
+<div class="article-item">
+    <a href="@Url.Action("ArticleDetail", new { url = Model.Url })" class="article-img">
+        @if (Model.Image != null)
+        {
+            <img data-src="@Path.Combine("/images/articles/", Model.Image)" src="~/Content/images/img-main/base64.gif" alt="@Model.Subject" class="lazyload" />
+        }
+        else
+        {
+            <img src="~/Content/images/img-main/on-image.jpg" alt="@Model.Subject" />
+        }
+    </a>
+    <div class="body">
+        <a href="@Url.Action("ArticleCategory", "Home", new { url = Model.ArticleCategory.Url })" class="article-cat">
+            @Model.ArticleCategory.CategoryName
+        </a>
+        <div class="subject">
+            <a href="@Url.Action("ArticleDetail", new { url = Model.Url })">
+                @Model.Subject
+            </a>
+        </div>
+        <div class="desc">@Model.Description</div>
+    </div>
+</div>

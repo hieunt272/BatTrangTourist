@@ -1,0 +1,99 @@
+﻿@model BatTrangTourist.ViewModel.ListServiceViewModel
+@using PagedList.Mvc
+@{
+    ViewBag.Title = "Danh sách dịch vụ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Danh sách dịch vụ</h2>
+@if (ViewBag.Result == "success")
+{
+    <div id="AlertBox" class="alert alert-success"><strong>Thêm mới dịch vụ thành công</strong></div>
+}
+@if (ViewBag.Result == "update")
+{
+    <div id="AlertBox" class="alert alert-success"><strong>Cập nhật dịch vụ thành công</strong></div>
+}
+<a class="btn quick-link" href="@Url.Action("Service")"><i class="fal fa-plus-circle mr-1"></i>Thêm dịch vụ</a>
+<div class="box_content">
+    <form action="@Url.Action("ListService")" method="get">
+        <div class="row">
+            <div class="col-3 mb-3">
+                <label>Sản phẩm</label>
+                <select name="productId" class="form_control w300" id="select-product">
+                    <option value="0">Tất cả sản phẩm</option>
+                    @foreach (var product in Model.Products)
+                    {
+                        <option value="@product.Id">@product.Name</option>
+                    }
+                </select>
+            </div>
+            <div class="col-3 d-flex flex-column-reverse">
+                <div class="form-group">
+                    <button type="submit" class="btn-search">Tìm kiếm</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <p>Có tổng số <strong>@Model.Services.TotalItemCount</strong> dịch vụ</p>
+    <table class="list_table tablecenter">
+        <tr>
+            <th>STT</th>
+            <th>Tên dịch vụ</th>
+            <th>Giá</th>
+            <th>Tour</th>
+            <th>Hoạt động</th>
+            <th style="width: 100px"></th>
+        </tr>
+        @foreach (var service in Model.Services)
+        {
+            <tr data-id="@service.Id">
+                <td>@Html.DisplayFor(model => service.Sort)</td>
+                <td>@Html.DisplayFor(model => service.Name)</td>
+                <td>
+                    <p>Người lớn: @Html.DisplayFor(model => service.AdultPrice)</p>
+                    <p>Trẻ em: @Html.DisplayFor(model => service.ChildPrice)</p>
+                </td>
+                <td>@service.Product.Name</td>
+                <td>@Html.DisplayFor(model => service.Active)</td>
+                <td>
+                    @Html.ActionLink("Sửa", "UpdateService", new { serviceId = service.Id }) -
+                    <a href="javascript:;" onclick="deleteService('@service.Id')" style="color: red">Xóa</a>
+                </td>
+            </tr>
+        }
+        @if (Model.Services.PageCount > 1)
+        {
+            <tr>
+                <td colspan="8">@Html.PagedListPager(Model.Services, page => Url.Action("ListService", new { page }))</td>
+            </tr>
+        }
+    </table>
+</div>
+@section scripts
+{
+    <script type="text/javascript">
+        $("#select-product").select2();
+
+        function deleteService(id) {
+            if (confirm("Bạn có chắc chắn xóa dịch vụ này không?")) {
+                $.post("/ProductVcms/DeleteService", { serviceId: id }, function (data) {
+                    if (data) {
+                        $.toast({
+                            text: 'Xóa dịch vụ thành công',
+                            position: 'bottom-right',
+                            icon: 'success',
+                        })
+                        $("tr[data-id='" + id + "']").fadeOut();
+                    }
+                    else {
+                        $.toast({
+                            text: 'Quá trình thực hiện không thành công. Hãy thử lại',
+                            icon: 'error',
+                        });
+                    }
+                });
+            }
+        };
+    </script>
+}

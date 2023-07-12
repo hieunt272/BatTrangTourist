@@ -1,0 +1,57 @@
+﻿@model BatTrangTourist.ViewModel.AlbumDetailViewModel
+@{
+    ViewBag.Title = Model.PhotoLibrary.AlbumName;
+    ViewBag.Canonical = Request.Url?.GetLeftPart(UriPartial.Authority) + Url.Action("AlbumDetail", new { url = Model.PhotoLibrary.Url });
+}
+
+<section class="container">
+    <ul class="breadcrumb mb-0">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+        <li class="breadcrumb-item"><a href="@Url.Action("PhotoLibrary", "Home")">Thư viện ảnh</a></li>
+        <li class="breadcrumb-item">@Model.PhotoLibrary.AlbumName</li>
+    </ul> 
+</section>
+<section class="album-detail">
+    <div class="container">
+        <div class="album-name">@Model.PhotoLibrary.AlbumName</div>
+        <div class="content-detail">@Html.Raw(Model.PhotoLibrary.Body)</div>
+        @if (Model.PhotoLibrary.ListImage != null)
+        {
+            var arrImg = Model.PhotoLibrary.ListImage.Split(',');
+            <div class="row">
+                @foreach (var img in arrImg)
+                {
+                    <div class="col-lg-3 col-md-4 col-6 mb-lg-3 mb-2">
+                        <a href="@Path.Combine("/images/photoLibraries/", img)" data-fancybox="gallery" data-caption="@Model.PhotoLibrary.AlbumName" class="photo-item">
+                            <img data-src="@Path.Combine("/images/photoLibraries/", img)" src="~/Content/images/img-main/base64.gif" alt="@Model.PhotoLibrary.AlbumName" class="lazyload" />
+                        </a>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>
+@if (Model.PhotoLibraries.Any())
+{
+    <section class="related-section related-albums">
+        <div class="container">
+            <div class="text-center">
+                <div class="title-section">
+                    Thư viện ảnh khác
+                </div>
+            </div>
+            <div class="related-list">
+                @foreach (var item in Model.PhotoLibraries)
+                {
+                    <a href="@Url.Action("AlbumDetail", new { url = item.Url })" class="album-item">
+                        @if (item.ListImage != null)
+                        {
+                            <img data-src="@Path.Combine("/images/photoLibraries/", item.ListImage.Split(',')[0])" src="~/Content/images/img-main/base64.gif" alt="@item.AlbumName" class="lazyload" />
+                        }
+                        <div class="album-name">@item.AlbumName</div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+}

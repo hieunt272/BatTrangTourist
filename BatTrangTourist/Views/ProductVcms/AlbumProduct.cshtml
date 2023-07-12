@@ -1,0 +1,221 @@
+﻿@model BatTrangTourist.ViewModel.InsertAlbumProductViewModel
+@{
+    ViewBag.Title = "Thêm ảnh sản phẩm";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var x = 1;
+}
+<style>
+    .fileinput-button {
+        margin: 0 auto;
+        padding: 4px 12px;
+        font-size: .875rem;
+    }
+
+    #ListImages li {
+        margin-right: auto;
+        margin-left: 8px;
+    }
+
+        #ListImages li a {
+            display: none;
+        }
+
+    .img-product {
+        margin-top: 5px;
+    }
+</style>
+<h2>Thêm mới Album</h2>
+<a class="btn quick-link" href="@Url.Action("ListProduct")"><i class="far fa-list mr-1"></i> Danh sách Tour</a>
+<div class="box_content album-product">
+    @using (Html.BeginForm("AlbumProduct", "ProductVcms", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.ProId)
+        <table class="form_table w-100 mt-4">
+            <tr>
+                <td class="form_name">@Html.LabelFor(model => model.AlbumProduct.Quantity)</td>
+                <td class="form_text">
+                    @Html.EditorFor(model => model.AlbumProduct.Quantity)
+                </td>
+            </tr>
+            @if (Model.AlbumProducts.Count() <= 0)
+            {
+                for (var i = 1; i <= 50; i++)
+                {
+                    <tr data-count="@i" style="display: none">
+                        <td class="form_name">Tiêu đề ảnh @i</td>
+                        <td class="form_text">
+                            <input type="text" name="TitleImage" class="form_control w300" placeholder="Tiêu đề ảnh @i" />
+                        </td>
+                        <td class="form_name">Hình ảnh @i</td>
+                        <td class="form-text" valign="top">
+                            <p class="btn btn-success fileinput-button">
+                                <span>Chọn ảnh...</span>
+                                <input type="file" class="fileupload" name="files[]" accept="image/*" multiple="" />
+                            </p>
+                            <ul id="ListImages" class="ListImages">
+                                <li>
+                                    <input type="hidden" name="Pictures_insert" value="" />
+                                    <a href="javascript:;" class="delfile">
+                                        <img src="/content/admin/icon-delete.png?w=15&h=15" alt="" style="vertical-align:middle" />
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                var sortUpdate = Model.AlbumProducts.Count() + 1;
+                foreach (var albumProduct in Model.AlbumProducts)
+                {
+                    <tr data-count="@x" style="display: none">
+                        <input type="hidden" name="Id" value="@albumProduct.Id" />
+                        <td class="form_name">Tiêu đề ảnh @x</td>
+                        <td class="form_text">
+                            <input type="text" name="TitleImageUpdate" class="form_control w300" placeholder="Tiêu đề ảnh @x" value="@albumProduct.TitleImage" />
+                        </td>
+                        <td class="form_name">Hình ảnh @x</td>
+                        <td class="form-text" valign="top">
+                            <p class="btn btn-success fileinput-button">
+                                <span>Chọn ảnh...</span>
+                                <input type="file" class="fileupload" name="files[]" accept="image/*" multiple="" />
+                            </p>
+                            <ul id="ListImages" class="ListImages">
+                                @if (albumProduct.Image != "")
+                                {
+                                    <li>
+                                        <img src="@Path.Combine("/images/albumProducts/", albumProduct.Image)?w=80&h=80&mode=crop" alt="" class="img-product" />
+                                        <input type="hidden" name="Pictures_update" value="@albumProduct.Image" />
+                                        <a href="javascript:;" class="delfile" style="display: block;">
+                                            <img src="/content/admin/icon-delete.png?w=15&h=15" alt="" style="vertical-align:middle" />
+                                        </a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>
+                                        <input type="hidden" name="Pictures_update" value="" />
+                                        <a href="javascript:;" class="delfile">
+                                            <img src="/content/admin/icon-delete.png?w=15&h=15" alt="" style="vertical-align:middle" />
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </td>
+                    </tr>
+                    x++;
+                }
+                for (var i = sortUpdate; i <= 50; i++)
+                {
+                    <tr data-count="@i" style="display: none">
+                        <td class="form_name">Tiêu đề ảnh @i</td>
+                        <td class="form_text">
+                            <input type="text" name="TitleImage" class="form_control w300" placeholder="Tiêu đề ảnh @i" />
+                        </td>
+                        <td class="form_name">Hình ảnh @i</td>
+                        <td class="form-text" valign="top">
+                            <p class="btn btn-success fileinput-button">
+                                <span>Chọn ảnh...</span>
+                                <input type="file" class="fileupload" name="files[]" accept="image/*" multiple="" />
+                            </p>
+                            <ul id="ListImages" class="ListImages">
+                                <li>
+                                    <input type="hidden" name="Pictures_insert" value="" />
+                                    <a href="javascript:;" class="delfile">
+                                        <img src="/content/admin/icon-delete.png?w=15&h=15" alt="" style="vertical-align:middle" />
+                                    </a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                }
+            }
+            <tr>
+                <td class="form_name"></td>
+                <td class="form_text">
+                    <input type="submit" value="Thêm mới" />
+                </td>
+            </tr>
+        </table>
+    }
+</div>
+@section scripts
+{
+    <script>
+        $(function () {
+            var quantity = $("#AlbumProduct_Quantity").val();
+            for (var i = 1; i <= quantity; i++) {
+                $("tr[data-count='" + i + "']").show();
+            }
+            $("#AlbumProduct_Quantity").on("change keyup", function () {
+                $("tr[data-count]").hide();
+                var num = $(this).val();
+                for (var i = 1; i <= num; i++) {
+                    $("tr[data-count='" + i + "']").show();
+                }
+            });
+            $('.product-list').change(function () {
+                let url = window.location.href.split('=');
+                let proId = $(this).val();
+                window.location.href = url[0] + "=" + proId;
+            });
+            $(".ListImages").sortable();
+            $(".ListImages").disableSelection();
+        });
+
+        var i = 1;
+        $('.fileupload').each(function () {
+            var item = $(this).parents('tr').find('.ListImages li');
+            $(this).fileupload({
+                add: function (e, data) {
+                    var uploadErrors = [];
+                    var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                    if (data.originalFiles[0]["type"].length && !acceptFileTypes.test(data.originalFiles[0]["type"])) {
+                        uploadErrors.push("Chỉ chấp nhận định dạng jpeg, jpg, png, gif");
+                    }
+                    if (data.originalFiles[0]["size"] > 4000000) {
+                        uploadErrors.push("Dung lượng ảnh lớn hơn 4MB");
+                    }
+                    var totalImg = item.find('img').length;
+                    if (totalImg >= 2) {
+                        uploadErrors.push("Chỉ chọn tối đa 1 ảnh");
+                    }
+                    if (uploadErrors.length > 0) {
+                        alert(uploadErrors.join("\n"));
+                        return false;
+                    } else {
+                        data.submit();
+                    }
+                    return true;
+                },
+                url: "/Uploader/Upload?folder=albumProducts&r=" + Math.random(),
+                dataType: "json",
+                done: function (e, data) {
+                    $.each(data.result.files, function (index, file) {
+                        item.find('input').val(file.name);
+                        item.prepend('<img src="/images/albumProducts/' + file.name + '?w=80&h=80" class="img-product"/>');
+                        item.find('.delfile').css('display', 'block');
+                    });
+                },
+                start: function () {
+                    $("#progress .progress-bar").css("width", "0");
+                    $("#progress").show();
+                },
+                progressall: function (e, data) {
+                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    $("#progress .progress-bar").css("width", progress + "%");
+                }
+            }).prop('disabled', !$.support.fileInput).parent().addClass($.support.fileInput ? undefined : 'disabled');
+        });
+
+        $('.delfile').click(function () {
+            if (confirm('Bạn có chắc xóa ảnh này?')) {
+                $(this).parent().find('input').val("");
+                $(this).parent().find('.img-product').fadeOut().remove();
+                $(this).fadeOut().css("display", "none");
+            }
+        });
+    </script>
+}

@@ -1,0 +1,89 @@
+﻿@model BatTrangTourist.Models.User
+@{
+    ViewBag.Title = "Thông tin cá nhân";
+}
+
+<section class="bg-second">
+    <div class="container">
+        <div class="user-page">
+            <div class="w30">
+                @Html.Action("UserNav", "Dashboard")
+            </div>
+            <div class="w70">
+                <div class="user-box">
+                    @if (ViewBag.Result == "success")
+                    {
+                        <div id="AlertBox" class="success">
+                            Cập nhật thông tin thành công
+                        </div>
+                    }            <div class="title-user">
+                        Thông tin cá nhân
+                    </div>
+                    <div class="sub-title-user">
+                        Vui lòng cập nhật thông tin đầy đủ
+                    </div>
+
+                    @using (Html.BeginForm("UserInfo", "Dashboard", FormMethod.Post, new { @class = "user-form", enctype = "multipart/form-data" }))
+                    {
+                        @Html.ValidationSummary(true)
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.Id)
+                        @Html.HiddenFor(m => m.Username)
+                        @Html.HiddenFor(m => m.Password)
+                        <div class="form-row mb-3">
+                            <div class="col-4 d-flex align-items-center">
+                                @Html.LabelFor(m => m.Avatar)
+                            </div>
+                            <div class="col-8 d-flex align-items-center">
+                                @if (Model.Avatar != null)
+                                {
+                                    <img src="@Path.Combine("/images/users/", Model.Avatar)" class="avatar" alt="@Model.FullName" />
+                                }
+                                else
+                                {
+                                    <div class="txt-avatar" style="background: @Model.Color">@Model.Username.ToUpper().Substring(0, 1)</div>
+                                }
+                                @Html.TextBoxFor(m => m.Avatar, new { @class = "file-input", type = "file" })
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="col-4">
+                                @Html.LabelFor(m => m.FullName)
+                            </div>
+                            <div class="col-8">
+                                @Html.TextBoxFor(m => m.FullName, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.FullName)
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="col-4">
+                                @Html.LabelFor(m => m.PhoneNumber)
+                            </div>
+                            <div class="col-8">
+                                @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.PhoneNumber)
+                            </div>
+                        </div>
+                        <div class="form-row mb-3">
+                            <div class="col-4">
+                                @Html.LabelFor(m => m.Email)
+                            </div>
+                            <div class="col-8">
+                                <input type="text" name="Email" value="@Model.Email" class="form-control" readonly />
+                                @Html.ValidationMessageFor(m => m.Email)
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-4"></div>
+                            <div class="col-8">
+                                <button type="submit" class="btn-user">
+                                    Lưu
+                                </button>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

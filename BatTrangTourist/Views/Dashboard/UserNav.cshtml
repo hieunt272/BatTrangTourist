@@ -1,0 +1,29 @@
+﻿<div class="user-nav">
+    <a href="@Url.Action("UserInfo", "Dashboard")" class="user-nav-item">
+        <i class="fas fa-user"></i>
+        <span>
+            Thông tin cá nhân
+        </span>
+        <i class="fas fa-chevron-right"></i>
+    </a>
+    <a href="@Url.Action("UserOrder", "Dashboard")" class="user-nav-item">
+        <i class="fas fa-box"></i>
+        <span>
+            Đơn hàng của tôi
+        </span>
+        <i class="fas fa-chevron-right"></i>
+    </a>
+    <a href="@Url.Action("ChangePassword", "Dashboard")" class="user-nav-item">
+        <i class="fa-solid fa-lock"></i>
+        <span>
+            Đổi mật khẩu
+        </span>
+        <i class="fas fa-chevron-right"></i>
+    </a>
+    <a href="@Url.Action("Logout", "User")" onclick="">
+        <i class="fas fa-sign-out"></i>
+        <span>
+            Đăng xuất
+        </span>
+    </a>
+</div>

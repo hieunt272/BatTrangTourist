@@ -1,0 +1,123 @@
+﻿@model BatTrangTourist.ViewModel.InsertServiceViewModel
+@{
+    ViewBag.Title = "Cập nhật dịch vụ";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Cập nhật dịch vụ</h2>
+<a class="btn quick-link" href="@Url.Action("ListService")"><i class="far fa-list mr-1"></i> Danh sách dịch vụ</a>
+<div class="box_content">
+    @using (Html.BeginForm("UpdateService", "ProductVcms", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        @Html.HiddenFor(model => model.Service.Id)
+        <div class="row">
+            <div class="col-lg-8">
+                @Html.ValidationSummary(true)
+                <table class="form_table">
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Name)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Name)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.AdultPrice)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.AdultPrice)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.ChildPrice)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.ChildPrice)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Tags)</td>
+                        <td class="form_text">
+                            @Html.TextBoxFor(model => model.Tags, new { @class = "tm-input tm-tag-info form_control w300" }) Enter để nhập TAG
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Schedule)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Schedule)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Include)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Include)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Note)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Note)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Terms)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Terms)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Manual)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Manual)</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name"></td>
+                        <td class="form_text">
+                            <input type="submit" class="btn quick-link" value="Cập nhật" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <table class="form_table">
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.ProductId)</td>
+                        <td class="form_text">
+                            <select name="ProductId" class="form_control w300" id="select-product" required>
+                                <option value="0">Tất cả sản phẩm</option>
+                                @foreach (var product in Model.Products)
+                                {
+                                    <option value="@product.Id" @if (Model.Service.ProductId == product.Id) { @Html.Raw("selected='selected'") }>@product.Name</option>
+                                }
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Active)</td>
+                        <td class="form_text">@Html.CheckBoxFor(model => model.Service.Active, new { @checked = "checked" })</td>
+                    </tr>
+                    <tr>
+                        <td class="form_name">@Html.LabelFor(model => model.Service.Sort)</td>
+                        <td class="form_text">@Html.EditorFor(model => model.Service.Sort)</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    }
+</div>
+@section scripts{
+    <script src="~/Scripts/tagmanager.js"></script>
+    <script src="~/Scripts/jquery.maskMoney.min.js"></script>
+    <script>
+        $(function () {
+            $(".input-number").maskMoney({
+                precision: 0,
+                thousands: ','
+            });
+
+            $("#select-product").select2();
+
+            var tag = "@Html.Raw(Model.Tags)";
+            $(".tm-input").tagsManager({
+                prefilled: tag
+            });
+            var cache = {};
+            $("#Tags").autocomplete({
+                minLength: 2,
+                source: function (request, response) {
+                    var term = request.term;
+                    if (term in cache) {
+                        response(cache[term]);
+                        return;
+                    }
+                    $.getJSON("/Vcms/GetTags", request, function (data, status, xhr) {
+                        cache[term] = data;
+                        response(data);
+                    });
+                }
+            });
+        });
+    </script>
+}

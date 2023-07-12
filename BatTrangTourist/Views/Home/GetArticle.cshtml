@@ -1,0 +1,26 @@
+﻿@model BatTrangTourist.ViewModel.AllArticleViewModel
+@using PagedList.Mvc
+
+<div class="row">
+    @if (Model.Articles.Any())
+    {
+        foreach (var item in Model.Articles)
+        {
+            <div class="col-lg-4 col-md-4">
+                @Html.Partial("_ArticleItem", item)
+            </div>
+        }
+        if (Model.Articles.PageCount > 1)
+        {
+            <div class="col-12 text-center">
+                @Html.PagedListPager(Model.Articles, page => Url.Action("AllArticle", new { page, sort = Model.Sort }))
+            </div>
+        }
+    }
+    else
+    {
+        <div class="col-12">
+            <p class="alert alert-success small">Nội dung hiện chưa được cập nhật. Vui lòng quay lại sau !!!!</p>
+        </div>
+    }
+</div>

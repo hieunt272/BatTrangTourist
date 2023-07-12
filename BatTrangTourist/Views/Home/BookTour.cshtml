@@ -1,0 +1,187 @@
+﻿@model BatTrangTourist.ViewModel.BookTourViewModel
+@{
+    ViewBag.Title = "Đăng ký tư vấn " + Model.ProductName;
+    ViewBag.PageIndex = "booktourindex";
+    ViewBag.Robots = "noindex";
+}
+@Styles.Render("~/Content/themes/base/css")
+
+<div class="container" id="book-page">
+    <ul class="breadcrumb">
+        <li class="breadcrumb-item"><a href="@Url.Action("Index")">Trang chủ</a></li>
+        <li class="breadcrumb-item">Đặt Tour</li>
+    </ul>
+    <h1 class="sing-header-title">ĐĂNG KÝ ĐẶT TOUR</h1>
+    <form action="@Url.Action("BookTour")" method="post" class="mt-4">
+        <div class="row">
+            <div class="col-lg-7 order-1 order-lg-0">
+                <div class="box-border mt-lg-0 mt-3">
+                    <h2>THÔNG TIN LIÊN HỆ</h2>
+                    <div class="alert alert-warning">
+                        Chúng tôi sẽ liên hệ ngay với bạn để xác nhận Booking này!
+                    </div>
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(a => a.Order.OrderNumber)
+                    @Html.HiddenFor(a => a.ServiceId)
+                    @Html.HiddenFor(a => a.AdultQuantity)
+                    @Html.HiddenFor(a => a.ChildQuantity)
+                    @Html.HiddenFor(a => a.CartTotal)
+                    <div class="form-group form-row">
+                        <div class="col-lg-6 col-md-6">
+                            <strong>Email *</strong>
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-main text-white"><i class="fa fa-fw fa-envelope"></i></span>
+                                </div>
+                                @Html.TextBoxFor(a => a.Order.CustomerInfo.Email, new { @class = "form-control rounded-0", placeholder = "Email" })
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <strong>Số điện thoại *</strong>
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-main text-white"><i class="fa fa-fw fa-mobile-alt"></i></span>
+                                </div>
+                                @Html.TextBoxFor(a => a.Order.CustomerInfo.Mobile, new { @class = "form-control rounded-0", placeholder = "Số điện thoại" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="col-lg-6 col-md-6">
+                            <strong>Họ và tên *</strong>
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-main text-white"><i class="fa fa-fw fa-user"></i></span>
+                                </div>
+                                @Html.TextBoxFor(a => a.Order.CustomerInfo.Fullname, new { @class = "form-control rounded-0", placeholder = "Họ và tên" })
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <strong>Địa chỉ</strong>
+                            <div class="input-group mt-2">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text bg-main text-white"><i class="fa fa-fw fa-map-marker-alt"></i></span>
+                                </div>
+                                @Html.TextBoxFor(a => a.Order.CustomerInfo.Address, new { @class = "form-control rounded-0", placeholder = "Địa chỉ" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group form-row">
+                        <div class="col-lg-12">
+                            <strong>Yêu cầu thêm</strong>
+                            @Html.TextAreaFor(a => a.Order.CustomerInfo.Body, new { @class = "form-control rounded-0 mt-2", rows = 3, placeholder = "Ví dụ: Nhà mình có 3 người lớn, 1 trẻ em 3 tuổi nhé ..." })
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn-booking">HOÀN THÀNH</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="box-border">
+                    <h2>CHI PHÍ DỰ KIẾN</h2>
+                    <div class="cart-info info-date">
+                        <span class="cart-label">Ngày khởi hành</span>
+                        @if (Model.DateGo != "")
+                        {
+                            <span class="cart-value">@Model.DateGo</span>
+                            @Html.HiddenFor(a => a.DateGo)
+                        }
+                        else
+                        {
+                            <span class="cart-value">
+                                @Html.TextBoxFor(a => a.DateGo, new { @class = "form-control rounded-0 datepicker", placeholder = "dd/mm/yyyy" })
+                            </span>
+                        }
+                    </div>
+                    <div class="cart-info">
+                        <span class="cart-label">Đơn vị</span>
+                        <span class="cart-value">
+                            @if (Model.AdultQuantity > 0)
+                            {
+                                <span class="value-item">Người lớn x @Model.AdultQuantity</span>
+                            }
+                            @if (Model.ChildQuantity > 0)
+                            {
+                                <span class="value-item">Trẻ em x @Model.ChildQuantity</span>
+                            }
+                        </span>
+                    </div>
+                    <table class="table mt-3">
+                        <tr>
+                            <td class="pl-0">Người lớn</td>
+                            <td class="text-right pr-0 price-book">
+                                @if (Model.AdultPrice > 0)
+                                {
+                                    @Convert.ToDecimal(Model.AdultPrice).ToString("N0")
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pl-0">Trẻ em</td>
+                            <td class="text-right pr-0 price-book" id="totalMoney">
+                                @if (Model.ChildPrice > 0)
+                                {
+                                    @Convert.ToDecimal(Model.ChildPrice).ToString("N0")
+                                }
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="pl-0">Tổng tiền</td>
+                            <td class="text-right pr-0 price-book" id="totalPay">
+                                @Model.CartTotal.ToString("N0") ₫
+                            </td>
+                        </tr>
+                    </table>
+                    <hr />
+                    <div class="detail-tour">
+                        <div class="img-detail">
+                            @if (Model.ProducImg != null)
+                            {
+                                <a href="javascript:;">
+                                    <img src="@Path.Combine("/images/products/", Model.ProducImg)" alt="@Model.ProductName" />
+                                </a>
+                            }
+                        </div>
+                        <div class="body">
+                            <div class="tour-name">@Model.ProductName</div>
+                            <div class="vote-box">
+                                <div class="meta-vote">
+                                    <div class="star-box">
+                                        <div class="star-gray">
+                                            <i class="fa-light fa-star"></i>
+                                            <i class="fa-light fa-star"></i>
+                                            <i class="fa-light fa-star"></i>
+                                            <i class="fa-light fa-star"></i>
+                                            <i class="fa-light fa-star"></i>
+                                        </div>
+                                        <div class="star-color" style="width: @(Model.Rating * 20)%">
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                            <i class="fa-solid fa-star"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-name">@Model.ServiceName</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@section scripts
+{
+    @Scripts.Render("~/bundles/jqueryval", "~/bundles/jqueryui")
+
+    <script>
+        $(".datepicker").datepicker({
+            dateFormat: 'dd/mm/yy',
+            minDate: 0
+        });
+    </script>
+}

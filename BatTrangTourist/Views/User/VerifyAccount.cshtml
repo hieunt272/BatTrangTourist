@@ -1,0 +1,20 @@
+﻿@model BatTrangTourist.Models.User
+@{ ViewBag.Title = "Xác thực tài khoản"; }
+
+<div class="page-user py-lg-5 py-3">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3 col-12">
+                <div class="box-user">
+                    @if (Model != null)
+                    {
+                        <div class="alert alert-success">Xác thực tài khoản thành công. Bạn vui lòng đăng nhập <a href="@Url.Action("Login")">tại đây</a></div> }
+                    else
+                    {
+                        <div class="alert alert-danger">Thông tin xác thực không chính xác hoặc link đã hết hạn.</div>}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
