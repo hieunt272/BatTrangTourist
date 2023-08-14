@@ -1,0 +1,230 @@
+﻿@model BatTrangTourist.ViewModel.HomeViewModel
+@using BatTrangTourist.Models
+@{
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form action="@Url.Action("SearchProduct")" class="banner-form">
+    <button type="submit"><i class="fa-light fa-location-dot"></i></button>
+    <input type="text" name="keywords" class="form-control" placeholder="Bạn muốn đi đâu?" autocomplete="off" required />
+</form>
+@if (Model.Banners.Any())
+{
+    <section class="banner">
+        @foreach (var item in Model.Banners.Where(a => a.GroupId == 1))
+        {
+            <a href="@item.Url" class="banner-item">
+                @if (item.Image != null)
+                {
+                    <img src="@Path.Combine("/images/banners/", item.Image)" alt="@item.BannerName" />
+                }
+            </a>
+        }
+    </section>
+}
+<section class="nav-home">
+    <div class="container">
+        <div class="nav-list">
+            <a href="@Url.Action("AllProduct")" class="nav-item">
+                <div class="nav-icon">
+                    <img src="~/Content/images/img-main/icon-cat.png" alt="Category" />
+                </div>
+                <span class="name">Tour</span>
+            </a>
+            @if (Model.ArticleCategories.Any(a => a.ParentId == null))
+            {
+                foreach (var item in Model.ArticleCategories.Where(a => a.ParentId == null))
+                {
+                    <a href="@Url.Action("ArticleCategory", "Home", new { url = item.Url })" class="nav-item">
+                        <div class="nav-icon">
+                            @if (item.Image != null)
+                            {
+                                <img src="@Path.Combine("/images/articleCategory/", item.Image)" alt="@item.CategoryName" />
+                            }
+                        </div>
+                        <span class="name">@item.CategoryName</span>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+</section>
+<section class="offers-mb">
+    <div class="title-section title-home">Ưu đãi hấp dẫn</div>
+    <div class="offer-list">
+        @foreach (var item in Model.Banners.Where(a => a.GroupId == 3))
+        {
+            <a href="@item.Url" class="offer-item">
+                @if (item.Image != null)
+                {
+                    <img data-src="@Path.Combine("/images/banners/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.BannerName" class="lazyload" />
+                }
+            </a>
+        }
+    </div>
+</section>
+<section class="container">
+    @if (Model.ProductHots.Any())
+    {
+        <div class="tours tours-home">
+            <div class="title-section title-home">Tour hot nhất trong tháng</div>
+            <div class="row mt-3">
+                @foreach (var item in Model.ProductHots)
+                {
+                    <div class="col-md-4 col-6">
+                        @Html.Partial("_ProductItem", item)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.ProductFavorites.Any())
+    {
+        <div class="tours tours-home">
+            <div class="title-section title-home">Tour được yêu thích nhất</div>
+            <div class="row mt-3">
+                @foreach (var item in Model.ProductFavorites)
+                {
+                    <div class="col-md-4 col-6">
+                        @Html.Partial("_ProductItem", item)
+                    </div>
+                }
+            </div>
+        </div>
+    }
+    @if (Model.Articles.Any())
+    {
+        <div class="blogs">
+            <div class="box-title">
+                <div class="title-section title-home">Cẩm nang du lịch</div>
+                <a href="@Url.Action("AllArticle")">
+                    Thêm <i class="fa-solid fa-caret-right"></i>
+                </a>
+            </div>
+            @foreach (var item in Model.Articles.Take(1))
+            {
+                <div class="blog-large">
+                    <a href="@Url.Action("ArticleDetail", new { url = item.Url })" class="blog-img">
+                        @if (item.Image != null)
+                        {
+                            <img data-src="@Path.Combine("/images/articles/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Subject" class="lazyload" />
+                        }
+                    </a>
+                    <div class="body">
+                        <a href="@Url.Action("ArticleCategory", "Home", new { url = item.ArticleCategory.Url })" class="blog-cat">
+                            @item.ArticleCategory.CategoryName
+                        </a>
+                        <div class="subject">
+                            <a href="@Url.Action("ArticleDetail", new { url = item.Url })">@item.Subject</a>
+                        </div>
+                    </div>
+                </div>
+            }
+            @foreach (var item in Model.Articles.Skip(1))
+            {
+                <div class="blog-horizonal">
+                    <a href="@Url.Action("ArticleDetail", new { url = item.Url })" class="blog-img">
+                        @if (item.Image != null)
+                        {
+                            <img data-src="@Path.Combine("/images/articles/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Subject" class="lazyload" />
+                        }
+                    </a>
+                    <div class="body">
+                        <div class="subject">
+                            <a href="@Url.Action("ArticleDetail", new { url = item.Url })">@item.Subject</a>
+                        </div>
+                        <div class="desc">
+                            @item.Description
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>
+@if (Model.Feedbacks.Any())
+{
+    <section class="feedback">
+        <div class="container">
+            <div class="title-section">khách hàng nói về chúng tôi</div>
+            <div class="sub-title-section">Những phản hồi thực tế từ những khách hàng đã sử dụng dịch vụ của chúng tôi</div>
+            <div class="feedback-list">
+                @foreach (var item in Model.Feedbacks)
+                {
+                    <div class="feedback-item">
+                        <div class="tour-name">@item.TourName</div>
+                        <div class="content">
+                            @item.Content
+                        </div>
+                        <div class="media customer">
+                            @if (item.Image != null)
+                            {
+                                <img data-src="@Path.Combine("/images/feedbacks/", item.Image)" src="~/Content/images/img-main/base64.gif" alt="@item.Name" class="avatar lazyload" />
+                            }
+                            <div class="media-body">
+                                <div class="name">@item.Name</div>
+                                <div class="vote-box">
+                                    <div class="meta-vote">
+                                        <div class="star-box">
+                                            <div class="star-gray">
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                                <i class="fa-light fa-star"></i>
+                                            </div>
+                                            <div class="star-color" style="width: @(item.Star * 20)%">
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                                <i class="fa-solid fa-star"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="job">@item.Classify</div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+}
+<section class="container">
+    <div class="subcribe">
+        <div class="box-left">
+            <div class="title">Đừng bỏ lỡ</div>
+            <div class="sub-text">Nhập địa chỉ Email để đăng ký nhận tin mới nhất</div>
+            <form class="subcribe-form" id="subcribeForm">
+                @Html.AntiForgeryToken()
+                <input type="email" name="email" class="form-control" placeholder="Địa chỉ email của bạn..." required />
+                <button type="submit">Đăng ký</button>
+            </form>
+        </div>
+    </div>
+    @if (config.ListImage != null)
+    {
+        var images = config.ListImage.Split(',');
+        <div class="photos">
+            <div class="title-section">thư viện ảnh</div>
+            <div class="sub-title-section">Hãy xem những hình ảnh đẹp nhất của chúng tôi tại đây</div>
+            <div class="photo-list">
+                @foreach (var image in images)
+                {
+                    <a href="@Path.Combine("/images/configs/", image)" data-fancybox="photo" class="photo-item">
+                        <img data-src="@Path.Combine("/images/configs/", image)" src="~/Content/images/img-main/base64.gif" alt="Thư viện ảnh" class="lazyload" />
+                    </a>
+                }
+            </div>
+        </div>
+    }
+</section>
+
+@section scripts {
+    <script>
+        homeJs();
+    </script>
+}

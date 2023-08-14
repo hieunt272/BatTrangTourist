@@ -731,6 +731,14 @@ input::-webkit-inner-spin-button {
 .blogs {
   margin-top: 40px;
 }
+.blogs .box-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.blogs .box-title a {
+  color: #DC212D;
+}
 
 .blog-item {
   margin-bottom: 10px;
@@ -3427,6 +3435,55 @@ input::-webkit-inner-spin-button {
   height: auto;
 }
 
+.site-search {
+  display: none;
+}
+
+.blog-large {
+  margin-top: 20px;
+  position: relative;
+}
+.blog-large::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(60, 60, 60, 0.8);
+  border-radius: 10px;
+}
+.blog-large .blog-img {
+  position: relative;
+  border-radius: 5px;
+  overflow: hidden;
+  display: block;
+}
+.blog-large img {
+  width: 100%;
+  aspect-ratio: 3;
+  object-fit: cover;
+}
+.blog-large .body {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  padding: 10px;
+  z-index: 1;
+}
+.blog-large .blog-cat {
+  color: #fff;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+}
+.blog-large .subject {
+  text-transform: uppercase;
+  font-weight: 700;
+}
+.blog-large .subject a {
+  color: #fff;
+}
+
 @media (max-width: 820px) {
   .row {
     margin: 0 -5px;
@@ -3468,6 +3525,7 @@ input::-webkit-inner-spin-button {
     height: 50px;
     overflow: hidden;
     z-index: 99;
+    margin-right: 10px;
   }
   .hamburger .bar {
     position: absolute;
@@ -3553,9 +3611,6 @@ input::-webkit-inner-spin-button {
   }
   .author-login-mb a i {
     margin-right: 10px;
-  }
-  .nav-mb {
-    margin-top: 10px;
   }
   .nav-mb > li {
     position: relative;
@@ -3713,6 +3768,233 @@ input::-webkit-inner-spin-button {
   .user-page {
     flex-wrap: wrap-reverse;
   }
+  .body-overlay {
+    position: fixed;
+    top: -100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 999;
+  }
+  .body-overlay.active {
+    top: 0;
+    pointer-events: auto;
+  }
+  .site-search {
+    display: block;
+    position: fixed;
+    top: -141px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    padding: 37px 0;
+    background: #fff;
+    transition: all 0.5s;
+    opacity: 0;
+    box-shadow: 0px 0px 17px 0px rgba(0, 0, 0, 0.25);
+  }
+  .site-search.active {
+    top: 0;
+    opacity: 1;
+  }
+  .site-search-close {
+    opacity: 1;
+    color: #e66445;
+    cursor: pointer;
+    font-size: 1.5rem;
+    margin-left: 50px;
+  }
+  .site-search .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .search-mb {
+    width: 100%;
+  }
+  .search-mb .input-group {
+    flex-wrap: nowrap;
+  }
+  .search-mb button {
+    border: 0;
+    background: #fff;
+    padding: 0 10px;
+  }
+  .search-mb .input-effect {
+    position: relative;
+    margin-left: 20px;
+    width: 100%;
+    transform: translateY(-4px);
+  }
+  .search-mb .form-control {
+    border: 0;
+    padding: 4px 0;
+    border-bottom: 1px solid #ccc;
+    background-color: transparent;
+    outline: 0;
+    border-radius: 0;
+    position: relative;
+    z-index: 1;
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  .search-mb .form-control ~ .focus-border {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 2px;
+    background-color: #3399ff;
+    transition: 0.4s;
+  }
+  .search-mb .form-control:focus ~ .focus-border,
+  .search-mb .has-content.form-control ~ .focus-border {
+    width: 100%;
+    transition: 0.4s;
+    left: 0;
+  }
+  .search-mb .form-control ~ label {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    top: 9px;
+    color: #aaa;
+    background: #fff;
+    transition: 0.3s;
+    letter-spacing: 0.5px;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  .search-mb .form-control:focus ~ label,
+  .search-mb .has-content.form-control ~ label {
+    top: -10px;
+    font-size: 12px;
+    color: #3399ff;
+    transition: 0.3s;
+  }
+  .btn-search {
+    font-size: 1.25rem;
+  }
+  .user-info {
+    font-size: 1.25rem;
+    margin-left: 20px;
+  }
+  .banner-form {
+    position: absolute;
+    top: 120px;
+    left: 0;
+    padding: 0 15px;
+    width: 100%;
+  }
+  .banner-form .form-control {
+    border: 0;
+    border-radius: 50px;
+    padding-left: 40px;
+  }
+  .banner-form button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 24px;
+    border: 0;
+    color: #DC212D;
+    background: #fff;
+    font-size: 1.25rem;
+    border-radius: 50%;
+  }
+  .nav-home {
+    margin: -100px 0 40px;
+    position: relative;
+  }
+  .nav-home::after {
+    content: "";
+    position: absolute;
+    top: 55px;
+    left: 0;
+    width: 100%;
+    height: calc(100% - 55px);
+    background: #fff;
+    border-radius: 25px;
+  }
+  .nav-list {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    z-index: 1;
+  }
+  .nav-list .nav-item {
+    display: block;
+    width: 110px;
+  }
+  .nav-list .nav-icon {
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.11);
+    background: #fff;
+  }
+  .nav-list img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+  }
+  .nav-list .name {
+    margin-top: 10px;
+    text-align: center;
+    display: block;
+    line-height: 20px;
+  }
+  .title-home {
+    text-align: left;
+    text-transform: unset;
+  }
+  .offers-mb {
+    padding-left: 17px;
+    overflow: hidden;
+  }
+  .offer-list {
+    margin-top: 15px;
+  }
+  .offer-list > .offer-item:not(:first-child) {
+    display: none;
+  }
+  .offer-list > .offer-item {
+    width: 300px;
+  }
+  .offer-list .slick-list {
+    margin: 0 -10px;
+  }
+  .offer-list .slick-slide {
+    width: 300px;
+    padding: 0 10px;
+  }
+  .tours-home .tour-item .booking-box {
+    display: none;
+  }
+  .blogs {
+    margin-bottom: 30px;
+  }
+  .footer .title-large {
+    font-size: 1.125rem;
+  }
+  .footer .social {
+    margin-top: 10px;
+  }
+  .footer-nav {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -10px;
+  }
+  .footer-nav li {
+    padding: 0 10px;
+  }
+  .footer-nav li:not(:last-child) {
+    border-right: 1px solid #D9D9D9;
+  }
+  .copyright {
+    padding-top: 0;
+    border-top: 0;
+    text-align: left;
+  }
 }
 @media (max-width: 600px) {
   .title-section {
@@ -3721,38 +4003,61 @@ input::-webkit-inner-spin-button {
   .sub-title-section {
     font-size: 0.75rem;
   }
+  .header-mb {
+    padding: 5px 0;
+  }
   .logo img {
-    height: 40px;
+    height: 35px;
   }
   .hamburger {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
   }
   .hamburger.active .bar:nth-child(1), .hamburger.active .bar:nth-child(2) {
-    width: 25px;
+    width: 20px;
   }
   .hamburger .bar {
-    height: 2px;
-    width: 25px;
+    height: 1px;
+    width: 20px;
   }
   .hamburger .bar:nth-child(1) {
-    transform: translateY(-8px);
-    width: 18px;
-    left: 8px;
+    transform: translateY(-7px);
+    width: 15px;
+    left: 7px;
   }
   .hamburger .bar:nth-child(2) {
-    transform: translateY(8px);
-    width: 12px;
-    left: 8px;
+    transform: translateY(7px);
+    width: 10px;
+    left: 7px;
   }
   .menu-mb {
-    top: 60px;
+    top: 45px;
     left: -100%;
     width: 100%;
-    height: calc(100vh - 60px);
+    height: calc(100vh - 45px);
   }
   .overlay {
     display: none;
+  }
+  .site-search {
+    padding: 20px 0;
+  }
+  .search-mb .form-control {
+    font-size: 0.75rem;
+    height: 32px;
+  }
+  .search-mb .form-control ~ label {
+    font-size: 0.75rem;
+  }
+  .search-mb .form-control ~ .focus-border {
+    height: 1px;
+  }
+  .btn-search {
+    font-size: 1.125rem;
+  }
+  .user-info {
+    font-size: 1.125rem;
+    margin-left: 15px;
   }
   .introduce {
     margin-top: 20px;
@@ -3816,7 +4121,9 @@ input::-webkit-inner-spin-button {
     width: calc(50% - 8px);
   }
   .photo-list .photo-item img {
-    height: 160px !important;
+    height: auto !important;
+    aspect-ratio: 3/2;
+    border-radius: 5px;
   }
   .related-section .title-section {
     font-size: 1rem;
@@ -3840,11 +4147,17 @@ input::-webkit-inner-spin-button {
   .box-filter .title {
     font-size: 1rem;
   }
+  .footer {
+    padding-top: 20px;
+  }
   .footer .title {
     font-size: 0.875rem;
   }
   .footer .footer-info {
     font-size: 0.875rem;
+  }
+  .footer-nav {
+    font-size: 0.75rem;
   }
   .filter {
     flex-wrap: wrap;
@@ -3952,6 +4265,9 @@ input::-webkit-inner-spin-button {
   }
   .review-item .list-review-img img {
     margin-bottom: 6px;
+  }
+  .copyright {
+    font-size: 0.65rem;
   }
 }
 .tel {

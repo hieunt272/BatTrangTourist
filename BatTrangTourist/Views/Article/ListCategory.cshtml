@@ -6,6 +6,7 @@
         <th>Tên danh mục</th>
         <th>Loại danh mục</th>
         <th>Hiện menu</th>
+        <th>Hiện trang chủ</th>
         <th>Hoạt động</th>
         <th style="width: 160px"></th>
     </tr>
@@ -25,6 +26,7 @@
                 <td class="left"><strong>@category.CategoryName</strong></td>
                 <td>@Html.DisplayFor(a => category.TypePost)</td>
                 <td>@Html.EditorFor(a => category.ShowMenu, new { htmlAttributes = new { id = "Menu" } })</td>
+                <td>@Html.EditorFor(a => category.ShowHome, new { htmlAttributes = new { id = "Home" } })</td>
                 <td>@Html.EditorFor(a => category.CategoryActive, new { htmlAttributes = new { id = "Active" } })</td>
                 <td>
                     <a href="javascript:;" onclick="updateCategory('@category.Id')">Cập nhật - </a>
@@ -47,6 +49,7 @@
                     <td class="left"><strong><i class="fal fa-window-minimize"></i> @child.CategoryName</strong></td>
                     <td>@Html.DisplayFor(a => child.TypePost)</td>
                     <td>@Html.EditorFor(a => child.ShowMenu, new { htmlAttributes = new { id = "Menu" } })</td>
+                    <td>@Html.EditorFor(a => child.ShowHome, new { htmlAttributes = new { id = "Home" } })</td>
                     <td>@Html.EditorFor(a => child.CategoryActive, new { htmlAttributes = new { id = "Active" } })</td>
                     <td>
                         <a href="javascript:;" onclick="updateCategory('@child.Id')">Cập nhật - </a>
@@ -84,12 +87,13 @@
         var sort = divId.find("input[name=Sort]").val();
         var active = divId.find("input#Active").prop("checked");
         var menu = divId.find("input#Menu").prop("checked");
+        var home = divId.find("input#Home").prop("checked");
 
         if (sort == "") {
             alert("Bạn hãy nhập số thứ tự");
         }
 
-        $.post("/Article/UpdateArticleCat", { articleCatId: id, sort, active, menu }, function (data) {
+        $.post("/Article/UpdateArticleCat", { articleCatId: id, sort, active, menu, home }, function (data) {
             if (data) {
                 $.toast({
                     text: 'Cập nhật thành công',

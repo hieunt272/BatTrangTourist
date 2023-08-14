@@ -19,6 +19,7 @@ namespace BatTrangTourist.ViewModel
         public IEnumerable<Product> ProductHots { get; set; }
         public IEnumerable<Article> Articles { get; set; }
         public IEnumerable<Feedback> Feedbacks { get; set; }
+        public IEnumerable<ArticleCategory> ArticleCategories { get; set; }
     }
 
     public class HeaderViewModel

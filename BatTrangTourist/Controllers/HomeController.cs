@@ -45,7 +45,18 @@ namespace BatTrangTourist.Controllers
                 Feedbacks = _unitOfWork.FeedbackRepository.GetQuery(a => a.Active, o => o.OrderBy(a => a.Sort), 12),
             };
 
+            if (Request.Browser.IsMobileDevice)
+            {
+                model.Articles = _unitOfWork.ArticleRepository.GetQuery(a => a.Active && a.Home, o => o.OrderByDescending(a => a.CreateDate), 6);
+                model.ArticleCategories = ArticleCategories.Where(a => a.ShowHome);
+                return PartialView("IndexMobile", model);
+            }
+
             return View(model);
+        }
+        public PartialViewResult IndexMobile()
+        {
+            return PartialView();
         }
         [ChildActionOnly]
         public PartialViewResult Header()
@@ -65,7 +76,17 @@ namespace BatTrangTourist.Controllers
                 Articles = _unitOfWork.ArticleRepository.GetQuery(a => a.Active && a.ShowFooter &&
                     a.ArticleCategory.TypePost == TypePost.Policy, o => o.OrderByDescending(a => a.CreateDate))
             };
+
+            if (Request.Browser.IsMobileDevice)
+            {
+                return PartialView("FooterMobile", model);
+            }
+
             return PartialView(model);
+        }
+        public PartialViewResult FooterMobile()
+        {
+            return PartialView();
         }
         #endregion
 
@@ -556,7 +577,7 @@ namespace BatTrangTourist.Controllers
             }
             return View(model);
         }
-        [Route("tim-san-pham")]
+        [Route("tim-tour")]
         public ActionResult SearchProduct(int? page, string keywords, int catId = 0, int price = 0)
         {
             var pageNumber = page ?? 1;

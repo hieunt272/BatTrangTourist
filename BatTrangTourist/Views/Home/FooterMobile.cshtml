@@ -1,0 +1,49 @@
+﻿@model BatTrangTourist.ViewModel.FooterViewModel
+@using BatTrangTourist.Models
+@{ 
+    var config = (ConfigSite)HttpContext.Current.Application["ConfigSite"];
+}
+
+<section class="footer">
+    <div class="container position-relative">
+        <div class="title title-large">@config.Title</div>
+        <div class="footer-info">
+            <i class="fa-solid fa-globe"></i><b>Trụ sở chính:</b> @config.Place
+        </div>
+        <div class="footer-info">
+            <i class="fa-solid fa-phone"></i><b>Điện thoại:</b><a href="tel:@config.Hotline"> @config.Hotline</a>
+        </div>
+        <div class="footer-info">
+            <i class="fa-solid fa-envelope"></i><b>Email:</b><a href="mailto:@config.Email"> @config.Email</a>
+        </div>
+        @if (config.InfoFooter != null)
+        {
+            <div class="body-content">
+                @Html.Raw(config.InfoFooter)
+            </div>
+        }
+        <div class="title mt-3">Chính sách & quy định</div>
+        @if (Model.Articles.Any())
+        {
+            <ul class="ul-reset footer-nav">
+                @foreach (var item in Model.Articles)
+                {
+                    <li>
+                        <a href="@Url.Action("ArticleDetail", new { url = item.Url })">
+                            @item.Subject
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+        <div class="social">
+            <a href="@config.Facebook" rel="nofollow" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="@config.Twitter" rel="nofollow" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+            <a href="@config.Youtube" rel="nofollow" target="_blank"><i class="fa-brands fa-youtube"></i></a>
+            <a href="@config.Instagram" rel="nofollow" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        </div>
+        <div class="copyright">
+            © Copyright BATTRANGTOURIST 2023. Designed by Vicogroup.vn
+        </div>
+    </div>
+</section>

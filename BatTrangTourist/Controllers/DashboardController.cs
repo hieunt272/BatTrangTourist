@@ -32,6 +32,12 @@ namespace Hytyky.Controllers
         public ActionResult UserInfo(string result = "")
         {
             ViewBag.Result = result;
+
+            if (User == null)
+            {
+                return RedirectToAction("Login", "User");
+            }
+
             var user = _unitOfWork.UserRepository.GetQuery(a => a.Id == User.Id).FirstOrDefault();
             if (user == null)
             {

@@ -139,14 +139,12 @@
 <section class="header-mb">
     <div class="container">
         <div class="row">
-            <div class="col-3 d-flex align-items-center">
+            <div class="col-6 d-flex align-items-center">
                 <div class="hamburger">
                     <span class="bar"></span>
                     <span class="bar"></span>
                     <span class="bar"></span>
                 </div>
-            </div>
-            <div class="col-6 d-flex justify-content-center">
                 <a href="@Url.Action("Index")" class="logo">
                     @if (config.Image != null)
                     {
@@ -154,16 +152,17 @@
                     }
                 </a>
             </div>
-            <div class="col-3"></div>
+            <div class="col-6 d-flex justify-content-end align-items-center">
+                <div class="btn-search">
+                    <i class="fa-light fa-magnifying-glass"></i>
+                </div>
+                <a href="@Url.Action("UserInfo", "Dashboard")" class="user-info">
+                    <i class="fa-light fa-user"></i>
+                </a>
+            </div>
         </div>
     </div>
     <div class="menu-mb">
-        <form action="@Url.Action("SearchProduct")" class="header-search-mb">
-            <input type="text" name="keywords" required="" class="form-control" placeholder="Nhập tìm kiếm bằng từ khóa..." />
-            <button type="submit">
-                <i class="far fa-search"></i>
-            </button>
-        </form>
         <ul class="ul-reset nav-mb">
             <li>
                 <a href="@Url.Action("AllProduct")">Tour</a>
@@ -250,3 +249,25 @@
         }
     </div>
 </section>
+<div class="body-overlay"></div>
+<div class="site-search">
+    <div class="container">
+        <form action="@Url.Action("SearchProduct")" class="search-mb">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <button>
+                        <i class="far fa-search"></i>
+                    </button>
+                </div>
+                <div class="input-effect">
+                    <input type="text" class="form-control" name="keywords" required autocomplete="off">
+                    <label>Tìm kiếm</label>
+                    <span class="focus-border"></span>
+                </div>
+            </div>
+        </form>
+        <div class="site-search-close">
+            <i class="fal fa-times"></i>
+        </div>
+    </div>
+</div>

@@ -20,6 +20,8 @@ namespace BatTrangTourist.Models
         public int? ParentId { get; set; }
         [Display(Name = "Hiển thị menu")]
         public bool ShowMenu { get; set; }
+        [Display(Name = "Hiển thị trang chủ")]
+        public bool ShowHome { get; set; }
 
         [Display(Name = "Thẻ tiêu đề"), StringLength(100, ErrorMessage = "Tối đa 100 ký tự"), UIHint("TextBox")]
         public string TitleMeta { get; set; }

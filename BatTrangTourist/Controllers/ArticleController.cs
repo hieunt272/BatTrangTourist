@@ -139,7 +139,7 @@ namespace BatTrangTourist.Controllers
             _unitOfWork.Save();
             return true;
         }
-        public bool UpdateArticleCat(int sort = 1, bool active = false, bool menu = false, int articleCatId = 0)
+        public bool UpdateArticleCat(int sort = 1, bool active = false, bool menu = false, bool home = false, int articleCatId = 0)
         {
             var articleCat = _unitOfWork.ArticleCategoryRepository.GetById(articleCatId);
             if (articleCat == null)
@@ -149,6 +149,7 @@ namespace BatTrangTourist.Controllers
             articleCat.CategorySort = sort;
             articleCat.CategoryActive = active;
             articleCat.ShowMenu = menu;
+            articleCat.ShowHome = home;
 
             _unitOfWork.Save();
             return true;

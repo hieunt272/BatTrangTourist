@@ -66,6 +66,17 @@ function homeJs() {
             }
         ]
     });
+
+    $(".offer-list").slick({
+        dots: false,
+        infinite: true,
+        speed: 1000,
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        arrows: false,
+        centerMode: false,
+        variableWidth: true,
+    });
 }
 
 function tourDetail() {
@@ -281,6 +292,21 @@ $(document).ready(function () {
     $('.site-overlay').click(function () {
         $(this).removeClass('show');
         $('.header-login').slideUp(200);
+    });
+
+    $(".btn-search").click(function () {
+        $(".body-overlay").addClass('active');
+        $(".site-search").addClass('active');
+        function delay() {
+            $(".site-search .form-control").focus();
+        }
+
+        setTimeout(delay, 300);
+    });
+
+    $(".body-overlay, .site-search-close").click(function () {
+        $(".body-overlay").removeClass('active');
+        $(".site-search").removeClass('active');
     });
 
     $(".hamburger").click(function () {

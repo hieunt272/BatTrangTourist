@@ -57,6 +57,10 @@
                         <td class="form_text">@Html.EditorFor(a => Model.ShowMenu)</td>
                     </tr>
                     <tr>
+                        <td class="form_name">@Html.LabelFor(a => Model.ShowHome)</td>
+                        <td class="form_text">@Html.EditorFor(a => Model.ShowHome)</td>
+                    </tr>
+                    <tr>
                         <td class="form_name">@Html.LabelFor(a => Model.CategoryActive)</td>
                         <td class="form_text">@Html.CheckBoxFor(a => Model.CategoryActive, new { @checked = "checked" })</td>
                     </tr>
