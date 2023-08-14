@@ -1005,6 +1005,7 @@ input::-webkit-inner-spin-button {
         li {
             list-style: none;
             margin: 0 5px;
+            height: 12px;
         }
 
         button {
@@ -3935,7 +3936,7 @@ input::-webkit-inner-spin-button {
         @include before(100%, 100%);
         top: 0;
         left: 0;
-        background: rgba(60, 60, 60, 0.80);
+        background: rgba(0, 0, 0, 0.80);
         border-radius: 10px;
     }
 
@@ -4487,6 +4488,7 @@ input::-webkit-inner-spin-button {
         left: 0;
         padding: 0 15px;
         width: 100%;
+        z-index: 1;
 
         .form-control {
             border: 0;
@@ -4643,7 +4645,7 @@ input::-webkit-inner-spin-button {
 
     .logo {
         img {
-            height: 35px;
+            height: 40px;
         }
     }
 
@@ -4679,10 +4681,10 @@ input::-webkit-inner-spin-button {
     }
 
     .menu-mb {
-        top: 45px;
+        top: 50px;
         left: -100%;
         width: 100%;
-        height: calc(100vh - 45px);
+        height: calc(100vh - 50px);
     }
 
     .overlay {
@@ -4766,7 +4768,11 @@ input::-webkit-inner-spin-button {
     }
 
     .feedback {
-        padding: 40px 20px;
+        padding: 30px 20px;
+    }
+
+    .feedback-list {
+        margin-top: 20px;
     }
 
     .customer {
@@ -5016,6 +5022,89 @@ input::-webkit-inner-spin-button {
 
     .copyright {
         font-size: .65rem;
+    }
+
+    .tour-item {
+        .body {
+            padding: 10px;
+        }
+
+        .tour-name {
+            height: 34px;
+        }
+
+        .desc {
+            font-size: .75rem;
+        }
+
+        .action-box {
+            margin-top: 5px;
+        }
+
+        .saleoff {
+            line-height: 16px;
+        }
+
+        .main {
+            line-height: 20px;
+        }
+    }
+
+    .offer-list {
+        .slick-list {
+            margin: 0 -5px;
+        }
+
+        .slick-slide {
+            width: 250px;
+            padding: 0 5px;
+        }
+    }
+
+    .banner-form {
+        top: 65px;
+
+        .form-control {
+            height: 36px;
+            font-size: .875rem;
+        }
+    }
+
+    .nav-list {
+        padding-bottom: 10px;
+
+        .nav-item {
+            width: 55px;
+        }
+
+        .nav-icon {
+            padding: 12px;
+        }
+
+        .name {
+            font-size: .65rem;
+            line-height: 12px;
+        }
+    }
+
+    .nav-home {
+        margin: -60px 0 20px;
+
+        &::after {
+            top: 28px;
+            height: calc(100% - 28px);
+        }
+    }
+
+    .blog-large {
+        .blog-cat {
+            margin-bottom: 2px;
+            display: inline-block;
+        }
+
+        .subject {
+            line-height: 18px;
+        }
     }
 }
 

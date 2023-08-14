@@ -871,6 +871,7 @@ input::-webkit-inner-spin-button {
 .feedback-list .slick-dots li {
   list-style: none;
   margin: 0 5px;
+  height: 12px;
 }
 .feedback-list .slick-dots button {
   color: transparent;
@@ -3450,7 +3451,7 @@ input::-webkit-inner-spin-button {
   height: 100%;
   top: 0;
   left: 0;
-  background: rgba(60, 60, 60, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   border-radius: 10px;
 }
 .blog-large .blog-img {
@@ -3885,6 +3886,7 @@ input::-webkit-inner-spin-button {
     left: 0;
     padding: 0 15px;
     width: 100%;
+    z-index: 1;
   }
   .banner-form .form-control {
     border: 0;
@@ -4007,7 +4009,7 @@ input::-webkit-inner-spin-button {
     padding: 5px 0;
   }
   .logo img {
-    height: 35px;
+    height: 40px;
   }
   .hamburger {
     width: 35px;
@@ -4031,10 +4033,10 @@ input::-webkit-inner-spin-button {
     left: 7px;
   }
   .menu-mb {
-    top: 45px;
+    top: 50px;
     left: -100%;
     width: 100%;
-    height: calc(100vh - 45px);
+    height: calc(100vh - 50px);
   }
   .overlay {
     display: none;
@@ -4092,7 +4094,10 @@ input::-webkit-inner-spin-button {
     font-size: 0.75rem;
   }
   .feedback {
-    padding: 40px 20px;
+    padding: 30px 20px;
+  }
+  .feedback-list {
+    margin-top: 20px;
   }
   .customer .avatar {
     width: 70px;
@@ -4268,6 +4273,65 @@ input::-webkit-inner-spin-button {
   }
   .copyright {
     font-size: 0.65rem;
+  }
+  .tour-item .body {
+    padding: 10px;
+  }
+  .tour-item .tour-name {
+    height: 34px;
+  }
+  .tour-item .desc {
+    font-size: 0.75rem;
+  }
+  .tour-item .action-box {
+    margin-top: 5px;
+  }
+  .tour-item .saleoff {
+    line-height: 16px;
+  }
+  .tour-item .main {
+    line-height: 20px;
+  }
+  .offer-list .slick-list {
+    margin: 0 -5px;
+  }
+  .offer-list .slick-slide {
+    width: 250px;
+    padding: 0 5px;
+  }
+  .banner-form {
+    top: 65px;
+  }
+  .banner-form .form-control {
+    height: 36px;
+    font-size: 0.875rem;
+  }
+  .nav-list {
+    padding-bottom: 10px;
+  }
+  .nav-list .nav-item {
+    width: 55px;
+  }
+  .nav-list .nav-icon {
+    padding: 12px;
+  }
+  .nav-list .name {
+    font-size: 0.65rem;
+    line-height: 12px;
+  }
+  .nav-home {
+    margin: -60px 0 20px;
+  }
+  .nav-home::after {
+    top: 28px;
+    height: calc(100% - 28px);
+  }
+  .blog-large .blog-cat {
+    margin-bottom: 2px;
+    display: inline-block;
+  }
+  .blog-large .subject {
+    line-height: 18px;
   }
 }
 .tel {
